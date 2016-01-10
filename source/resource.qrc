@@ -1,0 +1,17 @@
+<RCC>
+  <qresource prefix="/">
+    <file>../images/folder.png</file>
+    <file>../images/library.png</file>
+    <file>../images/source.png</file>
+    <file>../images/project.png</file>
+    <file>../images/sytem_folder.png</file>
+    <file>../images/delete.png</file>
+    <file>../images/edit.png</file>
+    <file>../images/rename.png</file>
+    <file>../images/dock/DockBottom.png</file>
+    <file>../images/dock/DockInside.png</file>
+    <file>../images/dock/DockLeft.png</file>
+    <file>../images/dock/DockRight.png</file>
+    <file>../images/dock/DockTop.png</file>
+  </qresource>
+</RCC>
