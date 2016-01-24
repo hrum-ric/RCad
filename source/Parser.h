@@ -1,7 +1,8 @@
 #ifndef __PARSER__
 #define __PARSER__
+#include "scanner.h"
 
-class Compiler
+class RCADParser
 {
 public:
 

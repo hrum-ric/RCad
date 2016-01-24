@@ -402,6 +402,7 @@ struct lemon {
   int basisflag;           /* Print only basis configurations */
   int has_fallback;        /* True if any %fallback is seen in the grammar */
   int nolinenosflag;       /* True if #line statements should not be printed */
+  int cpp;				   /* True if generated file are cpp*/
   char *argv0;             /* Name of the program */
 };
 
@@ -1519,7 +1520,9 @@ int main(int argc, char **argv)
   static int mhflag = 0;
   static int nolinenosflag = 0;
   static int noResort = 0;
+  static int cpp = 0;
   static struct s_options options[] = {
+	{OPT_FLAG, "cpp", (char*)&cpp, "generate cpp version." },
     {OPT_FLAG, "b", (char*)&basisflag, "Print only the basis in report."},
     {OPT_FLAG, "c", (char*)&compress, "Don't compress the action table."},
     {OPT_FSTR, "D", (char*)handle_D_option, "Define an %ifdef macro."},
@@ -1567,6 +1570,7 @@ int main(int argc, char **argv)
   Symbol_new("$");
   lem.errsym = Symbol_new("error");
   lem.errsym->useCnt = 0;
+  lem.cpp = cpp;
 
   /* Parse the input file */
   Parse(&lem);
@@ -3810,7 +3814,7 @@ void ReportTable(
 
   in = tplt_open(lemp);
   if( in==0 ) return;
-  out = file_open(lemp,".c","wb");
+  out = file_open(lemp,lemp->cpp?".cpp":".c","wb");
   if( out==0 ){
     fclose(in);
     return;

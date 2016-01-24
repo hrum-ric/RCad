@@ -25,12 +25,10 @@ equals( QMAKE_CXX, cl): DEFINES +=  QSCINTILLA_DLL
 # Parser
 win32:  LEMON_BIN = lemon.exe 
 unix:	LEMON_BIN = lemon
-win32:  QMOVE = move 
-unix:	QMOVE = mv 
 
 lemon.name = lemon
 lemon.input = LEMON_SOURCES
-lemon.commands = $$system_path($$absolute_path(./tools/$${LEMON_BIN})) -q ${QMAKE_FILE_IN} && $${QMOVE} $$system_path(${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.c) $$system_path(${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.cpp)
+lemon.commands = $$system_path($$absolute_path(./tools/$${LEMON_BIN})) -cpp ${QMAKE_FILE_IN}
 lemon.output = ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.cpp
 lemon.dependency_type = TYPE_C
 lemon.CONFIG += target_predeps
