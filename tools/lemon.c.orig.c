@@ -396,14 +396,12 @@ struct lemon {
   char *filename;          /* Name of the input file */
   char *outname;           /* Name of the current output file */
   char *tokenprefix;       /* A prefix added to token names in the .h file */
-  char *nonterminalprefix; /* A prefix added to token names in the .h file */
   int nconflict;           /* Number of parsing conflicts */
   int nactiontab;          /* Number of entries in the yy_action[] table */
   int tablesize;           /* Total table size of all tables in bytes */
   int basisflag;           /* Print only basis configurations */
   int has_fallback;        /* True if any %fallback is seen in the grammar */
   int nolinenosflag;       /* True if #line statements should not be printed */
-  int cpp;				   /* True if generated file are cpp*/
   char *argv0;             /* Name of the program */
 };
 
@@ -1521,9 +1519,7 @@ int main(int argc, char **argv)
   static int mhflag = 0;
   static int nolinenosflag = 0;
   static int noResort = 0;
-  static int cpp = 0;
   static struct s_options options[] = {
-	{OPT_FLAG, "cpp", (char*)&cpp, "generate cpp version." },
     {OPT_FLAG, "b", (char*)&basisflag, "Print only the basis in report."},
     {OPT_FLAG, "c", (char*)&compress, "Don't compress the action table."},
     {OPT_FSTR, "D", (char*)handle_D_option, "Define an %ifdef macro."},
@@ -1571,7 +1567,6 @@ int main(int argc, char **argv)
   Symbol_new("$");
   lem.errsym = Symbol_new("error");
   lem.errsym->useCnt = 0;
-  lem.cpp = cpp;
 
   /* Parse the input file */
   Parse(&lem);
@@ -2358,9 +2353,6 @@ to follow the previous rule.");
           psp->declargslot = &psp->gp->vardest;
         }else if( strcmp(x,"token_prefix")==0 ){
           psp->declargslot = &psp->gp->tokenprefix;
-          psp->insertLineMacro = 0;
-		}else if( strcmp(x,"nonterminal_prefix")==0 ){
-          psp->declargslot = &psp->gp->nonterminalprefix;
           psp->insertLineMacro = 0;
         }else if( strcmp(x,"syntax_error")==0 ){
           psp->declargslot = &(psp->gp->error);
@@ -3818,7 +3810,7 @@ void ReportTable(
 
   in = tplt_open(lemp);
   if( in==0 ) return;
-  out = file_open(lemp,lemp->cpp?".cpp":".c","wb");
+  out = file_open(lemp,".c","wb");
   if( out==0 ){
     fclose(in);
     return;
@@ -4274,55 +4266,33 @@ void ReportTable(
 void ReportHeader(struct lemon *lemp)
 {
   FILE *out, *in;
-  const char *tokenprefix;
-  const char *nonterminalprefix;
+  const char *prefix;
   char line[LINESIZE];
   char pattern[LINESIZE];
-  char symbolname[LINESIZE];
   int i;
 
-  if( lemp->tokenprefix )		tokenprefix = lemp->tokenprefix;
-  else							tokenprefix = "";
-  if( lemp->nonterminalprefix ) nonterminalprefix = lemp->nonterminalprefix;
-  else							nonterminalprefix = "";
-
-
+  if( lemp->tokenprefix ) prefix = lemp->tokenprefix;
+  else                    prefix = "";
   in = file_open(lemp,".h","rb");
-  if( in )
-  {
-	int nextChar;
-	for( i = 1; i<lemp->nterminal && fgets( line, LINESIZE, in ); i++ )
-	{
-		lemon_sprintf( pattern, "#define %s%-30s %3d\n", tokenprefix, lemp->symbols[i]->name, i );
-		if( strcmp(line,pattern) ) break;
-	}
-	for( ; i < lemp->nsymbol && fgets( line, LINESIZE, in ); i++ )
-	{
-		strcpy( symbolname, lemp->symbols[i]->name );
-		strupr( symbolname );
-		lemon_sprintf( pattern, "#define %s%-30s %3d\n", nonterminalprefix, symbolname, i );
-		if( strcmp( line, pattern ) ) break;
-	}
-	nextChar = fgetc(in);
-	fclose(in);
-	if( i==lemp->nsymbol && nextChar==EOF ){
-		/* No change in the file.  Don't rewrite it. */
-		return;
-	}
+  if( in ){
+    int nextChar;
+    for(i=1; i<lemp->nterminal && fgets(line,LINESIZE,in); i++){
+      lemon_sprintf(pattern,"#define %s%-30s %3d\n",
+                    prefix,lemp->symbols[i]->name,i);
+      if( strcmp(line,pattern) ) break;
+    }
+    nextChar = fgetc(in);
+    fclose(in);
+    if( i==lemp->nterminal && nextChar==EOF ){
+      /* No change in the file.  Don't rewrite it. */
+      return;
+    }
   }
   out = file_open(lemp,".h","wb");
-  if( out )
-  {
-    for(i=1; i<lemp->nterminal; i++)
-	{
-		fprintf( out, "#define %s%-30s %3d\n", tokenprefix, lemp->symbols[i]->name, i );
+  if( out ){
+    for(i=1; i<lemp->nterminal; i++){
+      fprintf(out,"#define %s%-30s %3d\n",prefix,lemp->symbols[i]->name,i);
     }
-	for( ; i < lemp->nsymbol; i++ )
-	{
-		strcpy( symbolname, lemp->symbols[i]->name );
-		strupr( symbolname );
-		fprintf( out, "#define %s%-30s %3d\n", nonterminalprefix, symbolname, i );
-	}
     fclose(out);  
   }
   return;

@@ -3,7 +3,7 @@
 #include <QCommandLineParser>
 #include <QFile>
 
-
+#include "Parser.h"
 void test();
 
 int main(int argc, char *argv[])
@@ -39,7 +39,13 @@ int main(int argc, char *argv[])
 
 void test()
 {
+	RCADParser parser;
 
+	QFile file( "C:\\Users\\romaric\\RCadTest\\main.rcad" );
+	file.open( QFile::ReadOnly );
+	QByteArray data = file.readAll();
+
+	parser.Parse( (const unsigned char*)data.constData(), (const unsigned char*)data.constEnd() );
 
 
 }

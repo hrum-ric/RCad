@@ -223,9 +223,9 @@ struct yyParser {
 typedef struct yyParser yyParser;
 
 #ifndef NDEBUG
-#include <QLoggingCategory>
-static const char *yyTracePrompt = 0;
-static const QLoggingCategory* yyTraceCategory = nullptr;
+#include <stdio.h>
+static FILE *yyTraceFILE = 0;
+static char *yyTracePrompt = 0;
 #endif /* NDEBUG */
 
 #ifndef NDEBUG
@@ -246,10 +246,11 @@ static const QLoggingCategory* yyTraceCategory = nullptr;
 ** Outputs:
 ** None.
 */
-void ParseTrace( const QLoggingCategory * pclTraceCategory, const char *zTracePrompt )
-{
-	yyTraceCategory = pclTraceCategory;
-	yyTracePrompt = zTracePrompt;
+void ParseTrace(FILE *TraceFILE, char *zTracePrompt){
+  yyTraceFILE = TraceFILE;
+  yyTracePrompt = zTracePrompt;
+  if( yyTraceFILE==0 ) yyTracePrompt = 0;
+  else if( yyTracePrompt==0 ) yyTraceFILE = 0;
 }
 #endif /* NDEBUG */
 
@@ -284,8 +285,8 @@ static void yyGrowStack(yyParser *p){
     p->yystack = pNew;
     p->yystksz = newSize;
 #ifndef NDEBUG
-    if( yyTracePrompt ){
-      qCDebug( (*yyTraceCategory),"%sStack grows to %d entries!\n",
+    if( yyTraceFILE ){
+      fprintf(yyTraceFILE,"%sStack grows to %d entries!\n",
               yyTracePrompt, p->yystksz);
     }
 #endif
@@ -360,7 +361,6 @@ static void yy_destructor(
 /********* End destructor definitions *****************************************/
     default:  break;   /* If no destructor action specified: do nothing */
   }
-  BaseParseARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 
 /*
@@ -374,8 +374,8 @@ static void yy_pop_parser_stack(yyParser *pParser){
   assert( pParser->yyidx>=0 );
   yytos = &pParser->yystack[pParser->yyidx--];
 #ifndef NDEBUG
-  if( yyTracePrompt ){
-    qCDebug( (*yyTraceCategory),"%sPopping %s\n",
+  if( yyTraceFILE ){
+    fprintf(yyTraceFILE,"%sPopping %s\n",
       yyTracePrompt,
       yyTokenName[yytos->major]);
   }
@@ -441,8 +441,8 @@ static int yy_find_shift_action(
         if( iLookAhead<sizeof(yyFallback)/sizeof(yyFallback[0])
                && (iFallback = yyFallback[iLookAhead])!=0 ){
 #ifndef NDEBUG
-          if( yyTracePrompt ){
-            qCDebug( (*yyTraceCategory), "%sFALLBACK %s => %s\n",
+          if( yyTraceFILE ){
+            fprintf(yyTraceFILE, "%sFALLBACK %s => %s\n",
                yyTracePrompt, yyTokenName[iLookAhead], yyTokenName[iFallback]);
           }
 #endif
@@ -464,8 +464,8 @@ static int yy_find_shift_action(
             yy_lookahead[j]==YYWILDCARD
           ){
 #ifndef NDEBUG
-            if( yyTracePrompt ){
-              qCDebug( (*yyTraceCategory), "%sWILDCARD %s => %s\n",
+            if( yyTraceFILE ){
+              fprintf(yyTraceFILE, "%sWILDCARD %s => %s\n",
                  yyTracePrompt, yyTokenName[iLookAhead],
                  yyTokenName[YYWILDCARD]);
             }
@@ -520,8 +520,8 @@ static void yyStackOverflow(yyParser *yypParser, YYMINORTYPE *yypMinor){
    ParseARG_FETCH;
    yypParser->yyidx--;
 #ifndef NDEBUG
-   if( yyTracePrompt ){
-     qCDebug( (*yyTraceCategory),"%sStack Overflow!\n",yyTracePrompt);
+   if( yyTraceFILE ){
+     fprintf(yyTraceFILE,"%sStack Overflow!\n",yyTracePrompt);
    }
 #endif
    while( yypParser->yyidx>=0 ) yy_pop_parser_stack(yypParser);
@@ -538,13 +538,13 @@ static void yyStackOverflow(yyParser *yypParser, YYMINORTYPE *yypMinor){
 */
 #ifndef NDEBUG
 static void yyTraceShift(yyParser *yypParser, int yyNewState){
-  if( yyTracePrompt ){
+  if( yyTraceFILE ){
     if( yyNewState<YYNSTATE ){
-      qCDebug( (*yyTraceCategory),"%sShift '%s', go to state %d\n",
+      fprintf(yyTraceFILE,"%sShift '%s', go to state %d\n",
          yyTracePrompt,yyTokenName[yypParser->yystack[yypParser->yyidx].major],
          yyNewState);
     }else{
-      qCDebug( (*yyTraceCategory),"%sShift '%s'\n",
+      fprintf(yyTraceFILE,"%sShift '%s'\n",
          yyTracePrompt,yyTokenName[yypParser->yystack[yypParser->yyidx].major]);
     }
   }
@@ -616,13 +616,12 @@ static void yy_reduce(
   yyStackEntry *yymsp;            /* The top of the parser's stack */
   int yysize;                     /* Amount to pop the stack */
   ParseARG_FETCH;
-  BaseParseARG_STORE; /* Suppress warning about unused %extra_argument variable */
   yymsp = &yypParser->yystack[yypParser->yyidx];
 #ifndef NDEBUG
-  if( yyTracePrompt && yyruleno>=0 
+  if( yyTraceFILE && yyruleno>=0 
         && yyruleno<(int)(sizeof(yyRuleName)/sizeof(yyRuleName[0])) ){
     yysize = yyRuleInfo[yyruleno].nrhs;
-    qCDebug( (*yyTraceCategory), "%sReduce [%s], go to state %d.\n", yyTracePrompt,
+    fprintf(yyTraceFILE, "%sReduce [%s], go to state %d.\n", yyTracePrompt,
       yyRuleName[yyruleno], yymsp[-yysize].stateno);
   }
 #endif /* NDEBUG */
@@ -677,8 +676,8 @@ static void yy_parse_failed(
 ){
   ParseARG_FETCH;
 #ifndef NDEBUG
-  if( yyTracePrompt ){
-    qCDebug( (*yyTraceCategory),"%sFail!\n",yyTracePrompt);
+  if( yyTraceFILE ){
+    fprintf(yyTraceFILE,"%sFail!\n",yyTracePrompt);
   }
 #endif
   while( yypParser->yyidx>=0 ) yy_pop_parser_stack(yypParser);
@@ -715,8 +714,8 @@ static void yy_accept(
 ){
   ParseARG_FETCH;
 #ifndef NDEBUG
-  if( yyTracePrompt ){
-    qCDebug( (*yyTraceCategory),"%sAccept!\n",yyTracePrompt);
+  if( yyTraceFILE ){
+    fprintf(yyTraceFILE,"%sAccept!\n",yyTracePrompt);
   }
 #endif
   while( yypParser->yyidx>=0 ) yy_pop_parser_stack(yypParser);
@@ -779,8 +778,8 @@ void Parse(
     yypParser->yystack[0].stateno = 0;
     yypParser->yystack[0].major = 0;
 #ifndef NDEBUG
-    if( yyTracePrompt ){
-      qCDebug( (*yyTraceCategory),"%sInitialize. Empty stack. State 0\n",
+    if( yyTraceFILE ){
+      fprintf(yyTraceFILE,"%sInitialize. Empty stack. State 0\n",
               yyTracePrompt);
     }
 #endif
@@ -792,8 +791,8 @@ void Parse(
   ParseARG_STORE;
 
 #ifndef NDEBUG
-  if( yyTracePrompt ){
-    qCDebug( (*yyTraceCategory),"%sInput '%s'\n",yyTracePrompt,yyTokenName[yymajor]);
+  if( yyTraceFILE ){
+    fprintf(yyTraceFILE,"%sInput '%s'\n",yyTracePrompt,yyTokenName[yymajor]);
   }
 #endif
 
@@ -812,8 +811,8 @@ void Parse(
       int yymx;
 #endif
 #ifndef NDEBUG
-      if( yyTracePrompt ){
-        qCDebug( (*yyTraceCategory),"%sSyntax Error!\n",yyTracePrompt);
+      if( yyTraceFILE ){
+        fprintf(yyTraceFILE,"%sSyntax Error!\n",yyTracePrompt);
       }
 #endif
 #ifdef YYERRORSYMBOL
@@ -842,8 +841,8 @@ void Parse(
       yymx = yypParser->yystack[yypParser->yyidx].major;
       if( yymx==YYERRORSYMBOL || yyerrorhit ){
 #ifndef NDEBUG
-        if( yyTracePrompt ){
-          qCDebug( (*yyTraceCategory),"%sDiscard input token %s\n",
+        if( yyTraceFILE ){
+          fprintf(yyTraceFILE,"%sDiscard input token %s\n",
              yyTracePrompt,yyTokenName[yymajor]);
         }
 #endif
@@ -906,13 +905,13 @@ void Parse(
     }
   }while( yymajor!=YYNOCODE && yypParser->yyidx>=0 );
 #ifndef NDEBUG
-  if( yyTracePrompt ){
+  if( yyTraceFILE ){
     int i;
-    qCDebug( (*yyTraceCategory),"%sReturn. Stack=",yyTracePrompt);
+    fprintf(yyTraceFILE,"%sReturn. Stack=",yyTracePrompt);
     for(i=1; i<=yypParser->yyidx; i++)
-      qCDebug( (*yyTraceCategory),"%c%s", i==1 ? '[' : ' ', 
+      fprintf(yyTraceFILE,"%c%s", i==1 ? '[' : ' ', 
               yyTokenName[yypParser->yystack[i].major]);
-    qCDebug( (*yyTraceCategory),"]\n");
+    fprintf(yyTraceFILE,"]\n");
   }
 #endif
   return;
