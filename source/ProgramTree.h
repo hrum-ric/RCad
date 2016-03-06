@@ -3,16 +3,12 @@
 #include <QString>
 #include <vector>
 #include <memory>
+#include "Value.h"
+#include "ProgramError.h"
 class Expression;
 class Variable;
 
-enum SimpleType
-{
-	eUndef,
-	eInteger,
-	eNumber,
-	eString,
-};
+
 
 class Expression
 {
@@ -82,7 +78,12 @@ protected:
 class Literal : public Expression
 {
 public:
-	Literal( Scanner::Token* );
+	Literal( qint64 integer ) : m_value(integer) {}
+	Literal(double number) : m_value(number) {}
+	Literal( QString string ) : m_value(string) {}
+	Literal( bool boolean ) : m_value(boolean) {}
+private:
+	Value	m_value;
 };
 
 class ExpressionMember : public Expression
@@ -218,8 +219,8 @@ protected:
 class CallParameter
 {
 public:
-	CallParameter(QString name, Expression* value) : m_name(name), m_value(value) {}
-	CallParameter(Expression* value) : m_value(value) {}
+	CallParameter( QString name, Expression* value) : m_name(name), m_value(value) {}
+	CallParameter( Expression* value) : m_value(value) {}
 	CallParameter( CallParameter && src ) { m_name = src.m_name; m_value = std::move( src.m_value ); }
 protected:
 	QString						m_name;
@@ -260,6 +261,14 @@ protected:
 	QString							m_functionName;
 	std::vector<DeclParameter>		m_parameters;
 	std::unique_ptr<StatementList>  m_body;
+};
+
+class ProgramModule
+{
+public:
+	void DeclareFunction(FunctionDecl* function) { m_functionList.emplace_back(function);  }
+private:
+	std::vector<std::unique_ptr<FunctionDecl>> m_functionList;
 };
 
 #endif // __PROGRAM_TREE__

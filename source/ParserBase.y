@@ -2,7 +2,7 @@
 %extra_argument			{ RCADParser* pParser }
 %token_prefix			TOKEN_
 %nonterminal_prefix		RULES_
-%token_type				{ Scanner::Token* }
+%token_type				{ TokenBase }
 
 %include 
 {
@@ -13,6 +13,7 @@
 
 %syntax_error 
 {
+	yymajor;
 	int expected[YYNOCODE]; 
 	int* cur = expected;
     for (int i = 0; i < YYNOCODE; ++i) 
@@ -21,6 +22,11 @@
 		if (a < YYNSTATE + YYNRULE) { *cur=i; cur++; }
 	}
 	pParser->OnError(TOKEN, expected, cur-expected);
+}
+%stack_overflow 
+{
+	yypMinor;
+    pParser->OnStackOverflow();
 }
 
 %left  KW_AND.
@@ -36,7 +42,7 @@ program ::= function_list .
 newline ::= NEWLINE.
 newline ::= ENDFILE.
 
-function_list ::= function_list function_decl.
+function_list ::= function_list function_decl(F).														{ pParser->addFunction(F); }
 function_list ::= function_list NEWLINE.
 function_list ::= .
 
@@ -48,12 +54,12 @@ function_list ::= .
 %destructor function_decl1 { delete($$); }
 %destructor function_declN { delete($$); }
 %destructor function_decl { delete($$); }
-function_decl0(F) ::= KW_FUNCTION IDENTIFIER(I) LEFT_PARENTHESIS.										{ F = new FunctionDecl(I->toString()); }
-function_decl1(F) ::= function_decl0(F0) IDENTIFIER(I) opt_type(T).										{ F=F0; F0->AddParameter(I->toString(),T,false); }
-function_decl1(F) ::= function_decl0(F0) IDENTIFIER(I) VARIADIC opt_type(T).							{ F=F0; F0->AddParameter(I->toString(),T,true); }
+function_decl0(F) ::= KW_FUNCTION IDENTIFIER(I) LEFT_PARENTHESIS.										{ F = new FunctionDecl(I.string()); }
+function_decl1(F) ::= function_decl0(F0) IDENTIFIER(I) opt_type(T).										{ F=F0; F0->AddParameter(I.string(),T,false); }
+function_decl1(F) ::= function_decl0(F0) IDENTIFIER(I) VARIADIC opt_type(T).							{ F=F0; F0->AddParameter(I.string(),T,true); }
 function_declN(F) ::= function_decl1(F1).																{ F = F1; }
-function_declN(F) ::= function_declN(FN) COMMA IDENTIFIER(I) opt_type(T).								{ F=FN; FN->AddParameter(I->toString(),T,true); }
-function_declN(F) ::= function_declN(FN) COMMA IDENTIFIER(I) VARIADIC opt_type(T).						{ F=FN; FN->AddParameter(I->toString(),T,true); }
+function_declN(F) ::= function_declN(FN) COMMA IDENTIFIER(I) opt_type(T).								{ F=FN; FN->AddParameter(I.string(),T,true); }
+function_declN(F) ::= function_declN(FN) COMMA IDENTIFIER(I) VARIADIC opt_type(T).						{ F=FN; FN->AddParameter(I.string(),T,true); }
 function_decl(F)  ::= function_decl0(F0) RIGHT_PARENTHESIS newline statement_list(S) KW_END newline.	{ F = F0; F0->SetStatement(S); }
 function_decl(F)  ::= function_declN(FN) RIGHT_PARENTHESIS newline statement_list(S) KW_END newline.	{ F = FN; FN->SetStatement(S); }
 
@@ -78,8 +84,8 @@ statement_then(S)	::= call(C) .											{ S = C; }
 
 %type var_declaration { Statement* }
 %destructor var_declaration { delete($$); }
-var_declaration(D) ::= KW_VAR IDENTIFIER(I) opt_type(T) EQ expression(E) .	{ D = new DeclarationStatement(I->toString(),T,E); }
-var_declaration(D) ::= KW_VAR IDENTIFIER(I) opt_type(T) .					{ D = new DeclarationStatement(I->toString(),T); }
+var_declaration(D) ::= KW_VAR IDENTIFIER(I) opt_type(T) EQ expression(E) .	{ D = new DeclarationStatement(I.string(),T,E); }
+var_declaration(D) ::= KW_VAR IDENTIFIER(I) opt_type(T) .					{ D = new DeclarationStatement(I.string(),T); }
 
 %type assignment { Statement* }
 %destructor assignment { delete($$); }
@@ -88,8 +94,8 @@ assignment(A) ::= variable(V) EQ expression_if(E) .							{ A = new AssignStatem
 
 %type variable { Variable* }
 %destructor variable { delete($$); }
-variable(V) ::= IDENTIFIER(I).												{ V = new NamedVariable(I->toString()); }
-variable(V) ::= variable(O) PERIOD IDENTIFIER(M).							{ V = new VariableMember(O,M->toString()); }
+variable(V) ::= IDENTIFIER(I).												{ V = new NamedVariable(I.string()); }
+variable(V) ::= variable(O) PERIOD IDENTIFIER(M).							{ V = new VariableMember(O,M.string()); }
 variable(V) ::= variable(A) LEFT_BRACKET expression(I) RIGHT_BRACKET.		{ V = new VariableSubElement(A,I); }
 
 %type statement_if { Statement* }
@@ -109,8 +115,8 @@ statement_if(S)				::= statement_if_then_elsif(S1) KW_END newline.														
 
 %type statement_for { Statement* }
 %destructor statement_for { delete($$); }
-statement_for(S)			::= KW_FOR IDENTIFIER(I) KW_FROM expression(F) KW_TO expression(T) for_by(B) KW_DO newline statement_list(SL) KW_END newline.	{ S = new ForCounterStatement(I->toString(), F, T, B, SL); }
-statement_for(S)			::= KW_FOR IDENTIFIER(I) KW_IN expression(E) KW_DO newline statement_list(SL) KW_END newline.									{ S = new ForInStatement(I->toString(), E, SL); }
+statement_for(S)			::= KW_FOR IDENTIFIER(I) KW_FROM expression(F) KW_TO expression(T) for_by(B) KW_DO newline statement_list(SL) KW_END newline.	{ S = new ForCounterStatement(I.string(), F, T, B, SL); }
+statement_for(S)			::= KW_FOR IDENTIFIER(I) KW_IN expression(E) KW_DO newline statement_list(SL) KW_END newline.									{ S = new ForInStatement(I.string(), E, SL); }
 %type for_by { Expression* }
 %destructor for_by { delete($$); }
 for_by(B)					::= KW_BY expression(E).																						{ B = E; }
@@ -118,16 +124,16 @@ for_by(B)					::= .																											{ B = nullptr; }
 
 %type call { Call* }
 %destructor call { delete($$); }
-call(C) ::= IDENTIFIER(F)  parameters_call(P).														{ P->SetName(F->toString()); C = P; }
+call(C) ::= IDENTIFIER(F)  parameters_call(P).														{ P->SetName(F.string()); C = P; }
 %type parameters_call { Call* }
 %destructor parameters_call { delete($$); }
 parameters_call(C) ::= LEFT_PARENTHESIS parameters_call_list(P) RIGHT_PARENTHESIS .					{ C = P; }
 parameters_call(C) ::= LEFT_PARENTHESIS RIGHT_PARENTHESIS .											{ C = new Call(); }
 %type parameters_call_list { Call* }
 %destructor parameters_call_list { delete($$); }
-parameters_call_list(L) ::= parameters_call_list(OL) COMMA IDENTIFIER(N) COLON parameter_call(P).	{ L = OL;			L->AddParameter(N->toString(), P); }
+parameters_call_list(L) ::= parameters_call_list(OL) COMMA IDENTIFIER(N) COLON parameter_call(P).	{ L = OL;			L->AddParameter(N.string(), P); }
 parameters_call_list(L) ::= parameters_call_list(OL) COMMA parameter_call(P).						{ L = OL;			L->AddParameter(P); }
-parameters_call_list(L) ::= IDENTIFIER(N) COLON parameter_call(P).									{ L = new Call();	L->AddParameter(N->toString(), P); }
+parameters_call_list(L) ::= IDENTIFIER(N) COLON parameter_call(P).									{ L = new Call();	L->AddParameter(N.string(), P); }
 parameters_call_list(L) ::= parameter_call(P).														{ L = new Call();	L->AddParameter(P); }
 %type parameter_call { Expression* }
 %destructor parameter_call { delete($$); }
@@ -138,8 +144,8 @@ parameter_call(P) ::= expression_if(E).																{ P = E; }
 %type expression { Expression* }
 %destructor expression { delete($$); }
 expression(E) ::= literal(L).																		{ E = L; }
-expression(E) ::= IDENTIFIER(I).																	{ E = new NamedVariable(I->toString()); }												
-expression(E) ::= expression(O) PERIOD IDENTIFIER(M).												{ E = new ExpressionMember(O,M->toString()); }	
+expression(E) ::= IDENTIFIER(I).																	{ E = new NamedVariable(I.string()); }												
+expression(E) ::= expression(O) PERIOD IDENTIFIER(M).												{ E = new ExpressionMember(O,M.string()); }	
 expression(E) ::= expression(A) LEFT_BRACKET expression(I) RIGHT_BRACKET.							{ E = new ExpressionSubElement(A,I); }
 expression(E) ::= call(C).																			{ E = C; }
 expression(E) ::= LEFT_PARENTHESIS expression(S) RIGHT_PARENTHESIS.									{ E = S; }
@@ -166,16 +172,20 @@ expression_if(E)	::= KW_IF expression(C) KW_THEN expression(T) KW_ELSE expressio
 
 %type literal { Expression* }
 %destructor literal { delete($$); }
-literal(E) ::= INTEGER|REAL|STRING|KW_TRUE|KW_FALSE(L).												{ E = new Literal(L); }
+literal(E) ::= INTEGER(L).																			{ E = new Literal(L.integer()); }
+literal(E) ::= REAL(L).																				{ E = new Literal(L.number()); }
+literal(E) ::= STRING(L).																			{ E = new Literal(L.string()); }
+literal(E) ::= KW_TRUE.																				{ E = new Literal(true); }
+literal(E) ::= KW_FALSE.																			{ E = new Literal(false); }
 
 %type type { SimpleType }
-type(T) ::= KW_INTEGER.																				{ T=eInteger; }
-type(T) ::= KW_NUMBER.																				{ T=eNumber; }
-type(T) ::= KW_STRING.																				{ T=eString; }
-type(T) ::= KW_VAR.																					{ T=eUndef; }
+type(T) ::= KW_INTEGER.																				{ T=SimpleType::eInteger; }
+type(T) ::= KW_NUMBER.																				{ T=SimpleType::eNumber; }
+type(T) ::= KW_STRING.																				{ T=SimpleType::eString; }
+type(T) ::= KW_VAR.																					{ T=SimpleType::eUndef; }
 
 %type opt_type { SimpleType }
 opt_type(T)  ::= COLON type(TS).																	{ T=TS; }
-opt_type(T)  ::= .																					{ T=eUndef; }
+opt_type(T)  ::= .																					{ T=SimpleType::eUndef; }
 
 

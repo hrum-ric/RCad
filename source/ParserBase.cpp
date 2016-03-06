@@ -91,7 +91,7 @@
 #define YYCODETYPE unsigned char
 #define YYNOCODE 75
 #define YYACTIONTYPE unsigned short int
-#define BaseParseTOKENTYPE  Scanner::Token* 
+#define BaseParseTOKENTYPE  TokenBase 
 typedef union {
   int yyinit;
   BaseParseTOKENTYPE yy0;
@@ -115,15 +115,15 @@ typedef union {
 #define YYERRORSYMBOL 46
 #define YYERRSYMDT yy149
 #define YYNSTATE             123
-#define YYNRULE              81
+#define YYNRULE              85
 #define YY_MAX_SHIFT         122
-#define YY_MIN_SHIFTREDUCE   174
-#define YY_MAX_SHIFTREDUCE   254
-#define YY_MIN_REDUCE        255
-#define YY_MAX_REDUCE        335
-#define YY_ERROR_ACTION      336
-#define YY_ACCEPT_ACTION     337
-#define YY_NO_ACTION         338
+#define YY_MIN_SHIFTREDUCE   178
+#define YY_MAX_SHIFTREDUCE   262
+#define YY_MIN_REDUCE        263
+#define YY_MAX_REDUCE        347
+#define YY_ERROR_ACTION      348
+#define YY_ACCEPT_ACTION     349
+#define YY_NO_ACTION         350
 /************* End control #defines *******************************************/
 
 /* The yyzerominor constant is used to initialize instances of
@@ -200,62 +200,62 @@ static const YYACTIONTYPE yy_action[] = {
  /*     0 */    40,   41,   34,   33,   32,   31,   30,   29,   39,   38,
  /*    10 */    37,   36,   35,    8,  118,   42,   40,   41,   34,   33,
  /*    20 */    32,   31,   30,   29,   39,   38,   37,   36,   35,    9,
- /*    30 */   118,   42,   67,  175,  176,   18,   67,  177,  112,  183,
- /*    40 */   103,   48,  120,  114,   22,  175,  176,  115,   67,   54,
- /*    50 */   253,   40,   41,   34,   33,   32,   31,   30,   29,   39,
+ /*    30 */   118,   42,   67,  179,  180,   18,   67,  181,  112,  187,
+ /*    40 */   103,   48,  120,  114,   22,  179,  180,  115,   67,   54,
+ /*    50 */   261,   40,   41,   34,   33,   32,   31,   30,   29,   39,
  /*    60 */    38,   37,   36,   35,    8,  118,   42,   40,   41,   34,
  /*    70 */    33,   32,   31,   30,   29,   39,   38,   37,   36,   35,
  /*    80 */    11,  118,   42,   19,   39,   38,   37,   36,   35,   72,
- /*    90 */   118,   42,   58,  196,  197,   57,  102,   40,   41,   34,
+ /*    90 */   118,   42,   58,  200,  201,   57,  102,   40,   41,   34,
  /*   100 */    33,   32,   31,   30,   29,   39,   38,   37,   36,   35,
- /*   110 */    20,  118,   42,   17,  229,   90,  206,  224,  337,   15,
- /*   120 */   175,  176,  106,  222,  225,   12,  187,   40,   41,   34,
+ /*   110 */    20,  118,   42,   17,  233,   90,  210,  228,  349,   15,
+ /*   120 */   179,  180,  106,  226,  229,   12,  191,   40,   41,   34,
  /*   130 */    33,   32,   31,   30,   29,   39,   38,   37,   36,   35,
- /*   140 */    71,  118,   42,   37,   36,   35,  184,  118,   42,   51,
- /*   150 */   211,  113,   49,  204,   46,   40,   41,   34,   33,   32,
- /*   160 */    31,   30,   29,   39,   38,   37,   36,   35,  210,  118,
- /*   170 */    42,  213,  229,   88,   73,  201,   10,  217,  118,   42,
- /*   180 */   212,  228,  225,   40,   41,   34,   33,   32,   31,   30,
+ /*   140 */    71,  118,   42,   37,   36,   35,  188,  118,   42,   51,
+ /*   150 */   215,  113,   49,  208,   46,   40,   41,   34,   33,   32,
+ /*   160 */    31,   30,   29,   39,   38,   37,   36,   35,  214,  118,
+ /*   170 */    42,  217,  233,   88,   73,  205,   10,  221,  118,   42,
+ /*   180 */   216,  232,  229,   40,   41,   34,   33,   32,   31,   30,
  /*   190 */    29,   39,   38,   37,   36,   35,   74,  118,   42,   40,
  /*   200 */    41,   34,   33,   32,   31,   30,   29,   39,   38,   37,
- /*   210 */    36,   35,   24,  118,   42,   75,   65,  205,  229,   86,
- /*   220 */    64,  117,  190,  188,  216,  186,   77,   25,  225,   40,
+ /*   210 */    36,   35,   24,  118,   42,   75,   65,  209,  233,   86,
+ /*   220 */    64,  117,  194,  192,  220,  190,   77,   25,  229,   40,
  /*   230 */    41,   34,   33,   32,   31,   30,   29,   39,   38,   37,
- /*   240 */    36,   35,  181,  118,   42,   45,  185,    8,  119,  182,
- /*   250 */    50,   56,  230,  104,   40,   41,   34,   33,   32,   31,
+ /*   240 */    36,   35,  185,  118,   42,   45,  189,    8,  119,  186,
+ /*   250 */    50,   56,  234,  104,   40,   41,   34,   33,   32,   31,
  /*   260 */    30,   29,   39,   38,   37,   36,   35,    1,  118,   42,
  /*   270 */     2,   41,   34,   33,   32,   31,   30,   29,   39,   38,
- /*   280 */    37,   36,   35,  203,  118,   42,   34,   33,   32,   31,
+ /*   280 */    37,   36,   35,  207,  118,   42,   34,   33,   32,   31,
  /*   290 */    30,   29,   39,   38,   37,   36,   35,    3,  118,   42,
- /*   300 */     4,   61,    6,    7,  189,  175,  176,  252,  231,  175,
- /*   310 */   176,   62,  192,  193,  194,  195,  196,  197,   16,  102,
- /*   320 */    21,  208,  105,   27,  249,  250,  251,   28,   27,   66,
- /*   330 */    13,    5,   28,   60,   14,  229,   78,  218,   68,   14,
- /*   340 */   227,   26,  116,   23,   45,  225,   26,   43,   70,   69,
- /*   350 */   121,  248,  248,  248,  248,  248,  248,  248,  248,  248,
- /*   360 */   248,  257,   27,   45,  229,   87,   28,   27,  255,  180,
- /*   370 */   257,   28,   59,   14,  225,  257,  257,   68,   14,  257,
- /*   380 */    26,  257,  257,  257,  257,  178,  257,  122,  257,   76,
- /*   390 */   248,  248,  248,  248,  248,  248,  248,  248,  248,  248,
- /*   400 */    47,  196,  197,  257,  102,  257,  257,  257,  175,  176,
- /*   410 */   257,   67,  175,  176,  257,   67,   52,  120,  257,   22,
- /*   420 */    53,  120,  115,   22,  257,  257,  115,  175,  176,  257,
- /*   430 */    67,  175,  176,  257,   67,   55,  120,  257,   22,   63,
- /*   440 */   120,  115,   22,  229,   44,  115,  175,  176,  257,   67,
- /*   450 */   257,  257,  257,  225,  257,  120,  257,   22,  229,   90,
- /*   460 */   115,  224,  229,   90,  257,  224,  257,  219,  225,  257,
- /*   470 */   257,  220,  225,  257,  229,   90,  257,  224,  229,   79,
- /*   480 */   229,   80,  257,  221,  225,  229,   81,  257,  225,  257,
- /*   490 */   225,  257,  257,  229,   82,  225,  257,  229,   89,  229,
- /*   500 */    84,  229,   85,  225,  229,  107,  257,  225,  257,  225,
- /*   510 */   257,  225,  229,  108,  225,  257,  229,   94,  229,   95,
- /*   520 */   229,   96,  225,  229,   97,  257,  225,  257,  225,  257,
- /*   530 */   225,  229,   98,  225,  229,   99,  257,  229,  109,  257,
- /*   540 */   257,  225,  229,  110,  225,  257,  257,  225,  229,  111,
- /*   550 */   257,  257,  225,  229,  100,  257,  229,  101,  225,  257,
- /*   560 */   229,   92,  257,  225,  229,   93,  225,  229,   83,  257,
- /*   570 */   225,  257,  229,   91,  225,  257,  257,  225,  257,  257,
- /*   580 */   257,  257,  225,
+ /*   300 */     4,   61,    6,    7,  193,  179,  180,  260,  235,  179,
+ /*   310 */   180,   62,  196,  197,  198,  199,  200,  201,   16,  102,
+ /*   320 */    21,  212,  105,   27,  257,  258,  259,   28,   27,   66,
+ /*   330 */    13,    5,   28,   60,   14,  233,   78,  222,   68,   14,
+ /*   340 */   231,   26,  116,   23,   45,  229,   26,   43,   70,   69,
+ /*   350 */   121,  252,  253,  254,  255,  256,  252,  253,  254,  255,
+ /*   360 */   256,  265,   27,   45,  233,   87,   28,   27,  263,  184,
+ /*   370 */   265,   28,   59,   14,  229,  265,  265,   68,   14,  265,
+ /*   380 */    26,  265,  265,  265,  265,  182,  265,  122,  265,   76,
+ /*   390 */   252,  253,  254,  255,  256,  252,  253,  254,  255,  256,
+ /*   400 */    47,  200,  201,  265,  102,  265,  265,  265,  179,  180,
+ /*   410 */   265,   67,  179,  180,  265,   67,   52,  120,  265,   22,
+ /*   420 */    53,  120,  115,   22,  265,  265,  115,  179,  180,  265,
+ /*   430 */    67,  179,  180,  265,   67,   55,  120,  265,   22,   63,
+ /*   440 */   120,  115,   22,  233,   44,  115,  179,  180,  265,   67,
+ /*   450 */   265,  265,  265,  229,  265,  120,  265,   22,  233,   90,
+ /*   460 */   115,  228,  233,   90,  265,  228,  265,  223,  229,  265,
+ /*   470 */   265,  224,  229,  265,  233,   90,  265,  228,  233,   79,
+ /*   480 */   233,   80,  265,  225,  229,  233,   81,  265,  229,  265,
+ /*   490 */   229,  265,  265,  233,   82,  229,  265,  233,   89,  233,
+ /*   500 */    84,  233,   85,  229,  233,  107,  265,  229,  265,  229,
+ /*   510 */   265,  229,  233,  108,  229,  265,  233,   94,  233,   95,
+ /*   520 */   233,   96,  229,  233,   97,  265,  229,  265,  229,  265,
+ /*   530 */   229,  233,   98,  229,  233,   99,  265,  233,  109,  265,
+ /*   540 */   265,  229,  233,  110,  229,  265,  265,  229,  233,  111,
+ /*   550 */   265,  265,  229,  233,  100,  265,  233,  101,  229,  265,
+ /*   560 */   233,   92,  265,  229,  233,   93,  229,  233,   83,  265,
+ /*   570 */   229,  265,  233,   91,  229,  265,  265,  229,  265,  265,
+ /*   580 */   265,  265,  229,
 };
 static const YYCODETYPE yy_lookahead[] = {
  /*     0 */     1,    2,    3,    4,    5,    6,    7,    8,    9,   10,
@@ -352,19 +352,19 @@ static const short yy_reduce_ofst[] = {
  /*    70 */   195,  212,  215,  242,  245,  247,  248,  276,
 };
 static const YYACTIONTYPE yy_default[] = {
- /*     0 */   260,  336,  336,  336,  336,  336,  290,  288,  336,  336,
- /*    10 */   336,  336,  336,  336,  336,  336,  336,  336,  336,  336,
- /*    20 */   336,  336,  336,  336,  336,  336,  336,  336,  336,  336,
- /*    30 */   336,  336,  336,  336,  336,  336,  336,  336,  336,  336,
- /*    40 */   336,  336,  336,  336,  296,  336,  336,  336,  336,  336,
- /*    50 */   335,  336,  336,  336,  336,  336,  336,  336,  336,  307,
- /*    60 */   307,  336,  336,  336,  336,  335,  335,  283,  307,  335,
- /*    70 */   335,  272,  272,  272,  272,  272,  272,  272,  336,  336,
- /*    80 */   336,  336,  336,  336,  336,  336,  336,  295,  281,  328,
- /*    90 */   304,  279,  316,  315,  327,  326,  325,  324,  323,  322,
- /*   100 */   318,  317,  336,  336,  336,  336,  336,  314,  313,  321,
- /*   110 */   320,  319,  336,  336,  336,  336,  336,  336,  336,  280,
- /*   120 */   336,  336,  336,
+ /*     0 */   268,  348,  348,  348,  348,  348,  298,  296,  348,  348,
+ /*    10 */   348,  348,  348,  348,  348,  348,  348,  348,  348,  348,
+ /*    20 */   348,  348,  348,  348,  348,  348,  348,  348,  348,  348,
+ /*    30 */   348,  348,  348,  348,  348,  348,  348,  348,  348,  348,
+ /*    40 */   348,  348,  348,  348,  304,  348,  348,  348,  348,  348,
+ /*    50 */   347,  348,  348,  348,  348,  348,  348,  348,  348,  315,
+ /*    60 */   315,  348,  348,  348,  348,  347,  347,  291,  315,  347,
+ /*    70 */   347,  280,  280,  280,  280,  280,  280,  280,  348,  348,
+ /*    80 */   348,  348,  348,  348,  348,  348,  348,  303,  289,  336,
+ /*    90 */   312,  287,  324,  323,  335,  334,  333,  332,  331,  330,
+ /*   100 */   326,  325,  348,  348,  348,  348,  348,  322,  321,  329,
+ /*   110 */   328,  327,  348,  348,  348,  348,  348,  348,  348,  288,
+ /*   120 */   348,  348,  348,
 };
 /********** End of lemon-generated parsing tables *****************************/
 
@@ -565,13 +565,17 @@ static const char *const yyRuleName[] = {
  /*  71 */ "expression ::= expression LT expression",
  /*  72 */ "expression ::= expression LE expression",
  /*  73 */ "expression_if ::= KW_IF expression KW_THEN expression KW_ELSE expression",
- /*  74 */ "literal ::= INTEGER|REAL|STRING|KW_TRUE|KW_FALSE",
- /*  75 */ "type ::= KW_INTEGER",
- /*  76 */ "type ::= KW_NUMBER",
- /*  77 */ "type ::= KW_STRING",
- /*  78 */ "type ::= KW_VAR",
- /*  79 */ "opt_type ::= COLON type",
- /*  80 */ "opt_type ::=",
+ /*  74 */ "literal ::= INTEGER",
+ /*  75 */ "literal ::= REAL",
+ /*  76 */ "literal ::= STRING",
+ /*  77 */ "literal ::= KW_TRUE",
+ /*  78 */ "literal ::= KW_FALSE",
+ /*  79 */ "type ::= KW_INTEGER",
+ /*  80 */ "type ::= KW_NUMBER",
+ /*  81 */ "type ::= KW_STRING",
+ /*  82 */ "type ::= KW_VAR",
+ /*  83 */ "opt_type ::= COLON type",
+ /*  84 */ "opt_type ::=",
 };
 #endif /* NDEBUG */
 
@@ -667,16 +671,16 @@ static void yy_destructor(
     case 52: /* function_decl1 */
     case 53: /* function_declN */
 {
-#line 50 "..\\source\\ParserBase.y"
+#line 56 "..\\source\\ParserBase.y"
  delete((yypminor->yy137)); 
-#line 673 "..\\source\\ParserBase.cpp"
+#line 677 "..\\source\\ParserBase.cpp"
 }
       break;
     case 55: /* statement_list */
 {
-#line 61 "..\\source\\ParserBase.y"
+#line 67 "..\\source\\ParserBase.y"
  delete((yypminor->yy92)); 
-#line 680 "..\\source\\ParserBase.cpp"
+#line 684 "..\\source\\ParserBase.cpp"
 }
       break;
     case 56: /* statement */
@@ -686,18 +690,18 @@ static void yy_destructor(
     case 60: /* statement_then */
     case 61: /* assignment */
 {
-#line 68 "..\\source\\ParserBase.y"
+#line 74 "..\\source\\ParserBase.y"
  delete((yypminor->yy56)); 
-#line 692 "..\\source\\ParserBase.cpp"
+#line 696 "..\\source\\ParserBase.cpp"
 }
       break;
     case 62: /* call */
     case 69: /* parameters_call */
     case 70: /* parameters_call_list */
 {
-#line 120 "..\\source\\ParserBase.y"
+#line 126 "..\\source\\ParserBase.y"
  delete((yypminor->yy95)); 
-#line 701 "..\\source\\ParserBase.cpp"
+#line 705 "..\\source\\ParserBase.cpp"
 }
       break;
     case 63: /* expression */
@@ -706,24 +710,24 @@ static void yy_destructor(
     case 71: /* parameter_call */
     case 72: /* literal */
 {
-#line 139 "..\\source\\ParserBase.y"
+#line 145 "..\\source\\ParserBase.y"
  delete((yypminor->yy7)); 
-#line 712 "..\\source\\ParserBase.cpp"
+#line 716 "..\\source\\ParserBase.cpp"
 }
       break;
     case 64: /* variable */
 {
-#line 90 "..\\source\\ParserBase.y"
+#line 96 "..\\source\\ParserBase.y"
  delete((yypminor->yy57)); 
-#line 719 "..\\source\\ParserBase.cpp"
+#line 723 "..\\source\\ParserBase.cpp"
 }
       break;
     case 66: /* statement_if_then */
     case 67: /* statement_if_then_elsif */
 {
-#line 101 "..\\source\\ParserBase.y"
+#line 107 "..\\source\\ParserBase.y"
  delete((yypminor->yy111)); 
-#line 727 "..\\source\\ParserBase.cpp"
+#line 731 "..\\source\\ParserBase.cpp"
 }
       break;
 /********* End destructor definitions *****************************************/
@@ -897,6 +901,11 @@ static void yyStackOverflow(yyParser *yypParser, YYMINORTYPE *yypMinor){
    /* Here code is inserted which will execute if the parser
    ** stack every overflows */
 /******** Begin %stack_overflow code ******************************************/
+#line 27 "..\\source\\ParserBase.y"
+
+	yypMinor;
+    pParser->OnStackOverflow();
+#line 909 "..\\source\\ParserBase.cpp"
 /******** End %stack_overflow code ********************************************/
    BaseParseARG_STORE; /* Suppress warning about unused %extra_argument var */
 }
@@ -1040,6 +1049,10 @@ static const struct {
   { 63, 3 },
   { 65, 6 },
   { 72, 1 },
+  { 72, 1 },
+  { 72, 1 },
+  { 72, 1 },
+  { 72, 1 },
   { 73, 1 },
   { 73, 1 },
   { 73, 1 },
@@ -1087,342 +1100,360 @@ static void yy_reduce(
   */
 /********** Begin reduce actions **********************************************/
       case 3: /* function_list ::= function_list function_decl */
-#line 39 "..\\source\\ParserBase.y"
-{
-  yy_destructor(yypParser,50,&yymsp[0].minor);
-}
-#line 1095 "..\\source\\ParserBase.cpp"
+#line 45 "..\\source\\ParserBase.y"
+{ pParser->addFunction(yymsp[0].minor.yy137); }
+#line 1106 "..\\source\\ParserBase.cpp"
         break;
       case 6: /* function_decl0 ::= KW_FUNCTION IDENTIFIER LEFT_PARENTHESIS */
-#line 51 "..\\source\\ParserBase.y"
-{ yygotominor.yy137 = new FunctionDecl(yymsp[-1].minor.yy0->toString()); }
-#line 1100 "..\\source\\ParserBase.cpp"
+#line 57 "..\\source\\ParserBase.y"
+{ yygotominor.yy137 = new FunctionDecl(yymsp[-1].minor.yy0.string()); }
+#line 1111 "..\\source\\ParserBase.cpp"
         break;
       case 7: /* function_decl1 ::= function_decl0 IDENTIFIER opt_type */
-#line 52 "..\\source\\ParserBase.y"
-{ yygotominor.yy137=yymsp[-2].minor.yy137; yymsp[-2].minor.yy137->AddParameter(yymsp[-1].minor.yy0->toString(),yymsp[0].minor.yy81,false); }
-#line 1105 "..\\source\\ParserBase.cpp"
+#line 58 "..\\source\\ParserBase.y"
+{ yygotominor.yy137=yymsp[-2].minor.yy137; yymsp[-2].minor.yy137->AddParameter(yymsp[-1].minor.yy0.string(),yymsp[0].minor.yy81,false); }
+#line 1116 "..\\source\\ParserBase.cpp"
         break;
       case 8: /* function_decl1 ::= function_decl0 IDENTIFIER VARIADIC opt_type */
-#line 53 "..\\source\\ParserBase.y"
-{ yygotominor.yy137=yymsp[-3].minor.yy137; yymsp[-3].minor.yy137->AddParameter(yymsp[-2].minor.yy0->toString(),yymsp[0].minor.yy81,true); }
-#line 1110 "..\\source\\ParserBase.cpp"
+#line 59 "..\\source\\ParserBase.y"
+{ yygotominor.yy137=yymsp[-3].minor.yy137; yymsp[-3].minor.yy137->AddParameter(yymsp[-2].minor.yy0.string(),yymsp[0].minor.yy81,true); }
+#line 1121 "..\\source\\ParserBase.cpp"
         break;
       case 9: /* function_declN ::= function_decl1 */
-#line 54 "..\\source\\ParserBase.y"
+#line 60 "..\\source\\ParserBase.y"
 { yygotominor.yy137 = yymsp[0].minor.yy137; }
-#line 1115 "..\\source\\ParserBase.cpp"
+#line 1126 "..\\source\\ParserBase.cpp"
         break;
       case 10: /* function_declN ::= function_declN COMMA IDENTIFIER opt_type */
-#line 55 "..\\source\\ParserBase.y"
-{ yygotominor.yy137=yymsp[-3].minor.yy137; yymsp[-3].minor.yy137->AddParameter(yymsp[-1].minor.yy0->toString(),yymsp[0].minor.yy81,true); }
-#line 1120 "..\\source\\ParserBase.cpp"
+#line 61 "..\\source\\ParserBase.y"
+{ yygotominor.yy137=yymsp[-3].minor.yy137; yymsp[-3].minor.yy137->AddParameter(yymsp[-1].minor.yy0.string(),yymsp[0].minor.yy81,true); }
+#line 1131 "..\\source\\ParserBase.cpp"
         break;
       case 11: /* function_declN ::= function_declN COMMA IDENTIFIER VARIADIC opt_type */
-#line 56 "..\\source\\ParserBase.y"
-{ yygotominor.yy137=yymsp[-4].minor.yy137; yymsp[-4].minor.yy137->AddParameter(yymsp[-2].minor.yy0->toString(),yymsp[0].minor.yy81,true); }
-#line 1125 "..\\source\\ParserBase.cpp"
+#line 62 "..\\source\\ParserBase.y"
+{ yygotominor.yy137=yymsp[-4].minor.yy137; yymsp[-4].minor.yy137->AddParameter(yymsp[-2].minor.yy0.string(),yymsp[0].minor.yy81,true); }
+#line 1136 "..\\source\\ParserBase.cpp"
         break;
       case 12: /* function_decl ::= function_decl0 RIGHT_PARENTHESIS newline statement_list KW_END newline */
       case 13: /* function_decl ::= function_declN RIGHT_PARENTHESIS newline statement_list KW_END newline */ yytestcase(yyruleno==13);
-#line 57 "..\\source\\ParserBase.y"
+#line 63 "..\\source\\ParserBase.y"
 { yygotominor.yy137 = yymsp[-5].minor.yy137; yymsp[-5].minor.yy137->SetStatement(yymsp[-2].minor.yy92); }
-#line 1131 "..\\source\\ParserBase.cpp"
+#line 1142 "..\\source\\ParserBase.cpp"
         break;
       case 14: /* statement_list ::= statement_list statement newline */
-#line 62 "..\\source\\ParserBase.y"
+#line 68 "..\\source\\ParserBase.y"
 { yymsp[-2].minor.yy92->append(yymsp[-1].minor.yy56); yygotominor.yy92 = yymsp[-2].minor.yy92; }
-#line 1136 "..\\source\\ParserBase.cpp"
+#line 1147 "..\\source\\ParserBase.cpp"
         break;
       case 15: /* statement_list ::= statement_list newline */
-#line 63 "..\\source\\ParserBase.y"
+#line 69 "..\\source\\ParserBase.y"
 { yygotominor.yy92 = yymsp[-1].minor.yy92; }
-#line 1141 "..\\source\\ParserBase.cpp"
+#line 1152 "..\\source\\ParserBase.cpp"
         break;
       case 16: /* statement_list ::= statement_list error newline */
-#line 64 "..\\source\\ParserBase.y"
+#line 70 "..\\source\\ParserBase.y"
 { yygotominor.yy92 = yymsp[-2].minor.yy92; }
-#line 1146 "..\\source\\ParserBase.cpp"
+#line 1157 "..\\source\\ParserBase.cpp"
         break;
       case 17: /* statement_list ::= */
-#line 65 "..\\source\\ParserBase.y"
+#line 71 "..\\source\\ParserBase.y"
 { yygotominor.yy92 = new StatementList(); }
-#line 1151 "..\\source\\ParserBase.cpp"
+#line 1162 "..\\source\\ParserBase.cpp"
         break;
       case 18: /* statement ::= var_declaration */
       case 19: /* statement ::= statement_if */ yytestcase(yyruleno==19);
       case 20: /* statement ::= statement_for */ yytestcase(yyruleno==20);
       case 21: /* statement ::= statement_then */ yytestcase(yyruleno==21);
       case 22: /* statement_then ::= assignment */ yytestcase(yyruleno==22);
-#line 69 "..\\source\\ParserBase.y"
+#line 75 "..\\source\\ParserBase.y"
 { yygotominor.yy56 = yymsp[0].minor.yy56; }
-#line 1160 "..\\source\\ParserBase.cpp"
+#line 1171 "..\\source\\ParserBase.cpp"
         break;
       case 23: /* statement_then ::= call */
-#line 77 "..\\source\\ParserBase.y"
+#line 83 "..\\source\\ParserBase.y"
 { yygotominor.yy56 = yymsp[0].minor.yy95; }
-#line 1165 "..\\source\\ParserBase.cpp"
+#line 1176 "..\\source\\ParserBase.cpp"
         break;
       case 24: /* var_declaration ::= KW_VAR IDENTIFIER opt_type EQ expression */
-#line 81 "..\\source\\ParserBase.y"
-{ yygotominor.yy56 = new DeclarationStatement(yymsp[-3].minor.yy0->toString(),yymsp[-2].minor.yy81,yymsp[0].minor.yy7); }
-#line 1170 "..\\source\\ParserBase.cpp"
+#line 87 "..\\source\\ParserBase.y"
+{ yygotominor.yy56 = new DeclarationStatement(yymsp[-3].minor.yy0.string(),yymsp[-2].minor.yy81,yymsp[0].minor.yy7); }
+#line 1181 "..\\source\\ParserBase.cpp"
         break;
       case 25: /* var_declaration ::= KW_VAR IDENTIFIER opt_type */
-#line 82 "..\\source\\ParserBase.y"
-{ yygotominor.yy56 = new DeclarationStatement(yymsp[-1].minor.yy0->toString(),yymsp[0].minor.yy81); }
-#line 1175 "..\\source\\ParserBase.cpp"
+#line 88 "..\\source\\ParserBase.y"
+{ yygotominor.yy56 = new DeclarationStatement(yymsp[-1].minor.yy0.string(),yymsp[0].minor.yy81); }
+#line 1186 "..\\source\\ParserBase.cpp"
         break;
       case 26: /* assignment ::= variable EQ expression */
       case 27: /* assignment ::= variable EQ expression_if */ yytestcase(yyruleno==27);
-#line 86 "..\\source\\ParserBase.y"
+#line 92 "..\\source\\ParserBase.y"
 { yygotominor.yy56 = new AssignStatement(yymsp[-2].minor.yy57,yymsp[0].minor.yy7); }
-#line 1181 "..\\source\\ParserBase.cpp"
+#line 1192 "..\\source\\ParserBase.cpp"
         break;
       case 28: /* variable ::= IDENTIFIER */
-#line 91 "..\\source\\ParserBase.y"
-{ yygotominor.yy57 = new NamedVariable(yymsp[0].minor.yy0->toString()); }
-#line 1186 "..\\source\\ParserBase.cpp"
+#line 97 "..\\source\\ParserBase.y"
+{ yygotominor.yy57 = new NamedVariable(yymsp[0].minor.yy0.string()); }
+#line 1197 "..\\source\\ParserBase.cpp"
         break;
       case 29: /* variable ::= variable PERIOD IDENTIFIER */
-#line 92 "..\\source\\ParserBase.y"
-{ yygotominor.yy57 = new VariableMember(yymsp[-2].minor.yy57,yymsp[0].minor.yy0->toString()); }
-#line 1191 "..\\source\\ParserBase.cpp"
+#line 98 "..\\source\\ParserBase.y"
+{ yygotominor.yy57 = new VariableMember(yymsp[-2].minor.yy57,yymsp[0].minor.yy0.string()); }
+#line 1202 "..\\source\\ParserBase.cpp"
         break;
       case 30: /* variable ::= variable LEFT_BRACKET expression RIGHT_BRACKET */
-#line 93 "..\\source\\ParserBase.y"
+#line 99 "..\\source\\ParserBase.y"
 { yygotominor.yy57 = new VariableSubElement(yymsp[-3].minor.yy57,yymsp[-1].minor.yy7); }
-#line 1196 "..\\source\\ParserBase.cpp"
+#line 1207 "..\\source\\ParserBase.cpp"
         break;
       case 31: /* statement_if ::= KW_IF expression KW_THEN statement_then KW_ELSE statement_then newline */
-#line 97 "..\\source\\ParserBase.y"
+#line 103 "..\\source\\ParserBase.y"
 { yygotominor.yy56 = new IfStatement(yymsp[-5].minor.yy7,yymsp[-3].minor.yy56,yymsp[-1].minor.yy56); }
-#line 1201 "..\\source\\ParserBase.cpp"
+#line 1212 "..\\source\\ParserBase.cpp"
         break;
       case 32: /* statement_if ::= KW_IF expression KW_THEN statement_then newline */
-#line 98 "..\\source\\ParserBase.y"
+#line 104 "..\\source\\ParserBase.y"
 { yygotominor.yy56 = new IfStatement(yymsp[-3].minor.yy7,yymsp[-1].minor.yy56); }
-#line 1206 "..\\source\\ParserBase.cpp"
+#line 1217 "..\\source\\ParserBase.cpp"
         break;
       case 33: /* statement_if_then ::= KW_IF expression KW_THEN newline statement_list */
-#line 102 "..\\source\\ParserBase.y"
+#line 108 "..\\source\\ParserBase.y"
 { yygotominor.yy111 = new IfBlocStatement(yymsp[-3].minor.yy7,yymsp[0].minor.yy92); }
-#line 1211 "..\\source\\ParserBase.cpp"
+#line 1222 "..\\source\\ParserBase.cpp"
         break;
       case 34: /* statement_if_then_elsif ::= statement_if_then */
-#line 105 "..\\source\\ParserBase.y"
+#line 111 "..\\source\\ParserBase.y"
 { yygotominor.yy111 = yymsp[0].minor.yy111; }
-#line 1216 "..\\source\\ParserBase.cpp"
+#line 1227 "..\\source\\ParserBase.cpp"
         break;
       case 35: /* statement_if_then_elsif ::= statement_if_then_elsif KW_ELSE KW_IF expression KW_THEN newline statement_list */
-#line 106 "..\\source\\ParserBase.y"
+#line 112 "..\\source\\ParserBase.y"
 { yygotominor.yy111 = yymsp[-6].minor.yy111; yymsp[-6].minor.yy111->AddElseIf(yymsp[-3].minor.yy7,yymsp[0].minor.yy92); }
-#line 1221 "..\\source\\ParserBase.cpp"
+#line 1232 "..\\source\\ParserBase.cpp"
         break;
       case 36: /* statement_if ::= statement_if_then_elsif KW_ELSE newline statement_list KW_END newline */
-#line 107 "..\\source\\ParserBase.y"
+#line 113 "..\\source\\ParserBase.y"
 { yygotominor.yy56 = yymsp[-5].minor.yy111; yymsp[-5].minor.yy111->AddElse(yymsp[-2].minor.yy92); }
-#line 1226 "..\\source\\ParserBase.cpp"
+#line 1237 "..\\source\\ParserBase.cpp"
         break;
       case 37: /* statement_if ::= statement_if_then_elsif KW_END newline */
-#line 108 "..\\source\\ParserBase.y"
+#line 114 "..\\source\\ParserBase.y"
 { yygotominor.yy56 = yymsp[-2].minor.yy111; }
-#line 1231 "..\\source\\ParserBase.cpp"
+#line 1242 "..\\source\\ParserBase.cpp"
         break;
       case 38: /* statement_for ::= KW_FOR IDENTIFIER KW_FROM expression KW_TO expression for_by KW_DO newline statement_list KW_END newline */
-#line 112 "..\\source\\ParserBase.y"
-{ yygotominor.yy56 = new ForCounterStatement(yymsp[-10].minor.yy0->toString(), yymsp[-8].minor.yy7, yymsp[-6].minor.yy7, yymsp[-5].minor.yy7, yymsp[-2].minor.yy92); }
-#line 1236 "..\\source\\ParserBase.cpp"
+#line 118 "..\\source\\ParserBase.y"
+{ yygotominor.yy56 = new ForCounterStatement(yymsp[-10].minor.yy0.string(), yymsp[-8].minor.yy7, yymsp[-6].minor.yy7, yymsp[-5].minor.yy7, yymsp[-2].minor.yy92); }
+#line 1247 "..\\source\\ParserBase.cpp"
         break;
       case 39: /* statement_for ::= KW_FOR IDENTIFIER KW_IN expression KW_DO newline statement_list KW_END newline */
-#line 113 "..\\source\\ParserBase.y"
-{ yygotominor.yy56 = new ForInStatement(yymsp[-7].minor.yy0->toString(), yymsp[-5].minor.yy7, yymsp[-2].minor.yy92); }
-#line 1241 "..\\source\\ParserBase.cpp"
+#line 119 "..\\source\\ParserBase.y"
+{ yygotominor.yy56 = new ForInStatement(yymsp[-7].minor.yy0.string(), yymsp[-5].minor.yy7, yymsp[-2].minor.yy92); }
+#line 1252 "..\\source\\ParserBase.cpp"
         break;
       case 40: /* for_by ::= KW_BY expression */
       case 49: /* parameter_call ::= expression */ yytestcase(yyruleno==49);
       case 50: /* parameter_call ::= expression_if */ yytestcase(yyruleno==50);
       case 51: /* expression ::= literal */ yytestcase(yyruleno==51);
-#line 116 "..\\source\\ParserBase.y"
+#line 122 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = yymsp[0].minor.yy7; }
-#line 1249 "..\\source\\ParserBase.cpp"
+#line 1260 "..\\source\\ParserBase.cpp"
         break;
       case 41: /* for_by ::= */
-#line 117 "..\\source\\ParserBase.y"
+#line 123 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = nullptr; }
-#line 1254 "..\\source\\ParserBase.cpp"
+#line 1265 "..\\source\\ParserBase.cpp"
         break;
       case 42: /* call ::= IDENTIFIER parameters_call */
-#line 121 "..\\source\\ParserBase.y"
-{ yymsp[0].minor.yy95->SetName(yymsp[-1].minor.yy0->toString()); yygotominor.yy95 = yymsp[0].minor.yy95; }
-#line 1259 "..\\source\\ParserBase.cpp"
+#line 127 "..\\source\\ParserBase.y"
+{ yymsp[0].minor.yy95->SetName(yymsp[-1].minor.yy0.string()); yygotominor.yy95 = yymsp[0].minor.yy95; }
+#line 1270 "..\\source\\ParserBase.cpp"
         break;
       case 43: /* parameters_call ::= LEFT_PARENTHESIS parameters_call_list RIGHT_PARENTHESIS */
-#line 124 "..\\source\\ParserBase.y"
+#line 130 "..\\source\\ParserBase.y"
 { yygotominor.yy95 = yymsp[-1].minor.yy95; }
-#line 1264 "..\\source\\ParserBase.cpp"
+#line 1275 "..\\source\\ParserBase.cpp"
         break;
       case 44: /* parameters_call ::= LEFT_PARENTHESIS RIGHT_PARENTHESIS */
-#line 125 "..\\source\\ParserBase.y"
+#line 131 "..\\source\\ParserBase.y"
 { yygotominor.yy95 = new Call(); }
-#line 1269 "..\\source\\ParserBase.cpp"
+#line 1280 "..\\source\\ParserBase.cpp"
         break;
       case 45: /* parameters_call_list ::= parameters_call_list COMMA IDENTIFIER COLON parameter_call */
-#line 128 "..\\source\\ParserBase.y"
-{ yygotominor.yy95 = yymsp[-4].minor.yy95;			yygotominor.yy95->AddParameter(yymsp[-2].minor.yy0->toString(), yymsp[0].minor.yy7); }
-#line 1274 "..\\source\\ParserBase.cpp"
+#line 134 "..\\source\\ParserBase.y"
+{ yygotominor.yy95 = yymsp[-4].minor.yy95;			yygotominor.yy95->AddParameter(yymsp[-2].minor.yy0.string(), yymsp[0].minor.yy7); }
+#line 1285 "..\\source\\ParserBase.cpp"
         break;
       case 46: /* parameters_call_list ::= parameters_call_list COMMA parameter_call */
-#line 129 "..\\source\\ParserBase.y"
+#line 135 "..\\source\\ParserBase.y"
 { yygotominor.yy95 = yymsp[-2].minor.yy95;			yygotominor.yy95->AddParameter(yymsp[0].minor.yy7); }
-#line 1279 "..\\source\\ParserBase.cpp"
+#line 1290 "..\\source\\ParserBase.cpp"
         break;
       case 47: /* parameters_call_list ::= IDENTIFIER COLON parameter_call */
-#line 130 "..\\source\\ParserBase.y"
-{ yygotominor.yy95 = new Call();	yygotominor.yy95->AddParameter(yymsp[-2].minor.yy0->toString(), yymsp[0].minor.yy7); }
-#line 1284 "..\\source\\ParserBase.cpp"
+#line 136 "..\\source\\ParserBase.y"
+{ yygotominor.yy95 = new Call();	yygotominor.yy95->AddParameter(yymsp[-2].minor.yy0.string(), yymsp[0].minor.yy7); }
+#line 1295 "..\\source\\ParserBase.cpp"
         break;
       case 48: /* parameters_call_list ::= parameter_call */
-#line 131 "..\\source\\ParserBase.y"
+#line 137 "..\\source\\ParserBase.y"
 { yygotominor.yy95 = new Call();	yygotominor.yy95->AddParameter(yymsp[0].minor.yy7); }
-#line 1289 "..\\source\\ParserBase.cpp"
+#line 1300 "..\\source\\ParserBase.cpp"
         break;
       case 52: /* expression ::= IDENTIFIER */
-#line 141 "..\\source\\ParserBase.y"
-{ yygotominor.yy7 = new NamedVariable(yymsp[0].minor.yy0->toString()); }
-#line 1294 "..\\source\\ParserBase.cpp"
+#line 147 "..\\source\\ParserBase.y"
+{ yygotominor.yy7 = new NamedVariable(yymsp[0].minor.yy0.string()); }
+#line 1305 "..\\source\\ParserBase.cpp"
         break;
       case 53: /* expression ::= expression PERIOD IDENTIFIER */
-#line 142 "..\\source\\ParserBase.y"
-{ yygotominor.yy7 = new ExpressionMember(yymsp[-2].minor.yy7,yymsp[0].minor.yy0->toString()); }
-#line 1299 "..\\source\\ParserBase.cpp"
+#line 148 "..\\source\\ParserBase.y"
+{ yygotominor.yy7 = new ExpressionMember(yymsp[-2].minor.yy7,yymsp[0].minor.yy0.string()); }
+#line 1310 "..\\source\\ParserBase.cpp"
         break;
       case 54: /* expression ::= expression LEFT_BRACKET expression RIGHT_BRACKET */
-#line 143 "..\\source\\ParserBase.y"
+#line 149 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new ExpressionSubElement(yymsp[-3].minor.yy7,yymsp[-1].minor.yy7); }
-#line 1304 "..\\source\\ParserBase.cpp"
+#line 1315 "..\\source\\ParserBase.cpp"
         break;
       case 55: /* expression ::= call */
-#line 144 "..\\source\\ParserBase.y"
+#line 150 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = yymsp[0].minor.yy95; }
-#line 1309 "..\\source\\ParserBase.cpp"
+#line 1320 "..\\source\\ParserBase.cpp"
         break;
       case 56: /* expression ::= LEFT_PARENTHESIS expression RIGHT_PARENTHESIS */
       case 57: /* expression ::= LEFT_PARENTHESIS expression_if RIGHT_PARENTHESIS */ yytestcase(yyruleno==57);
-#line 145 "..\\source\\ParserBase.y"
+#line 151 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = yymsp[-1].minor.yy7; }
-#line 1315 "..\\source\\ParserBase.cpp"
+#line 1326 "..\\source\\ParserBase.cpp"
         break;
       case 58: /* expression ::= KW_NOT expression */
-#line 147 "..\\source\\ParserBase.y"
+#line 153 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new NotExpression(yymsp[0].minor.yy7); }
-#line 1320 "..\\source\\ParserBase.cpp"
+#line 1331 "..\\source\\ParserBase.cpp"
         break;
       case 59: /* expression ::= MINUS expression */
-#line 148 "..\\source\\ParserBase.y"
+#line 154 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new MinusExpression(yymsp[0].minor.yy7); }
-#line 1325 "..\\source\\ParserBase.cpp"
+#line 1336 "..\\source\\ParserBase.cpp"
         break;
       case 60: /* expression ::= expression KW_OR expression */
-#line 149 "..\\source\\ParserBase.y"
+#line 155 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new OrExpression(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1330 "..\\source\\ParserBase.cpp"
+#line 1341 "..\\source\\ParserBase.cpp"
         break;
       case 61: /* expression ::= expression KW_AND expression */
-#line 150 "..\\source\\ParserBase.y"
+#line 156 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new AndExpression(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1335 "..\\source\\ParserBase.cpp"
+#line 1346 "..\\source\\ParserBase.cpp"
         break;
       case 62: /* expression ::= expression PLUS expression */
-#line 151 "..\\source\\ParserBase.y"
+#line 157 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new AddExpression(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1340 "..\\source\\ParserBase.cpp"
+#line 1351 "..\\source\\ParserBase.cpp"
         break;
       case 63: /* expression ::= expression MINUS expression */
-#line 152 "..\\source\\ParserBase.y"
+#line 158 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new SubstractExpression(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1345 "..\\source\\ParserBase.cpp"
+#line 1356 "..\\source\\ParserBase.cpp"
         break;
       case 64: /* expression ::= expression TIMES expression */
-#line 153 "..\\source\\ParserBase.y"
+#line 159 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new MultiplyExpression(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1350 "..\\source\\ParserBase.cpp"
+#line 1361 "..\\source\\ParserBase.cpp"
         break;
       case 65: /* expression ::= expression DIVIDE expression */
-#line 154 "..\\source\\ParserBase.y"
+#line 160 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new DivideExpression(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1355 "..\\source\\ParserBase.cpp"
+#line 1366 "..\\source\\ParserBase.cpp"
         break;
       case 66: /* expression ::= expression MODULO expression */
-#line 155 "..\\source\\ParserBase.y"
+#line 161 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new ModuloExpression(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1360 "..\\source\\ParserBase.cpp"
+#line 1371 "..\\source\\ParserBase.cpp"
         break;
       case 67: /* expression ::= expression EQ expression */
-#line 156 "..\\source\\ParserBase.y"
+#line 162 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new EqualCompare(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1365 "..\\source\\ParserBase.cpp"
+#line 1376 "..\\source\\ParserBase.cpp"
         break;
       case 68: /* expression ::= expression NE expression */
-#line 157 "..\\source\\ParserBase.y"
+#line 163 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new NotEqualCompare(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1370 "..\\source\\ParserBase.cpp"
+#line 1381 "..\\source\\ParserBase.cpp"
         break;
       case 69: /* expression ::= expression GT expression */
-#line 158 "..\\source\\ParserBase.y"
+#line 164 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new GreaterCompare(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1375 "..\\source\\ParserBase.cpp"
+#line 1386 "..\\source\\ParserBase.cpp"
         break;
       case 70: /* expression ::= expression GE expression */
-#line 159 "..\\source\\ParserBase.y"
+#line 165 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new GreaterEqualCompare(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1380 "..\\source\\ParserBase.cpp"
+#line 1391 "..\\source\\ParserBase.cpp"
         break;
       case 71: /* expression ::= expression LT expression */
-#line 160 "..\\source\\ParserBase.y"
+#line 166 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new LessCompare(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1385 "..\\source\\ParserBase.cpp"
+#line 1396 "..\\source\\ParserBase.cpp"
         break;
       case 72: /* expression ::= expression LE expression */
-#line 161 "..\\source\\ParserBase.y"
+#line 167 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new LessEqualCompare(yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1390 "..\\source\\ParserBase.cpp"
+#line 1401 "..\\source\\ParserBase.cpp"
         break;
       case 73: /* expression_if ::= KW_IF expression KW_THEN expression KW_ELSE expression */
-#line 165 "..\\source\\ParserBase.y"
+#line 171 "..\\source\\ParserBase.y"
 { yygotominor.yy7 = new IfExpression(yymsp[-4].minor.yy7,yymsp[-2].minor.yy7,yymsp[0].minor.yy7); }
-#line 1395 "..\\source\\ParserBase.cpp"
+#line 1406 "..\\source\\ParserBase.cpp"
         break;
-      case 74: /* literal ::= INTEGER|REAL|STRING|KW_TRUE|KW_FALSE */
-#line 169 "..\\source\\ParserBase.y"
-{ yygotominor.yy7 = new Literal(yymsp[0].minor.yy0); }
-#line 1400 "..\\source\\ParserBase.cpp"
-        break;
-      case 75: /* type ::= KW_INTEGER */
-#line 172 "..\\source\\ParserBase.y"
-{ yygotominor.yy81=eInteger; }
-#line 1405 "..\\source\\ParserBase.cpp"
-        break;
-      case 76: /* type ::= KW_NUMBER */
-#line 173 "..\\source\\ParserBase.y"
-{ yygotominor.yy81=eNumber; }
-#line 1410 "..\\source\\ParserBase.cpp"
-        break;
-      case 77: /* type ::= KW_STRING */
-#line 174 "..\\source\\ParserBase.y"
-{ yygotominor.yy81=eString; }
-#line 1415 "..\\source\\ParserBase.cpp"
-        break;
-      case 78: /* type ::= KW_VAR */
-      case 80: /* opt_type ::= */ yytestcase(yyruleno==80);
+      case 74: /* literal ::= INTEGER */
 #line 175 "..\\source\\ParserBase.y"
-{ yygotominor.yy81=eUndef; }
+{ yygotominor.yy7 = new Literal(yymsp[0].minor.yy0.integer()); }
+#line 1411 "..\\source\\ParserBase.cpp"
+        break;
+      case 75: /* literal ::= REAL */
+#line 176 "..\\source\\ParserBase.y"
+{ yygotominor.yy7 = new Literal(yymsp[0].minor.yy0.number()); }
+#line 1416 "..\\source\\ParserBase.cpp"
+        break;
+      case 76: /* literal ::= STRING */
+#line 177 "..\\source\\ParserBase.y"
+{ yygotominor.yy7 = new Literal(yymsp[0].minor.yy0.string()); }
 #line 1421 "..\\source\\ParserBase.cpp"
         break;
-      case 79: /* opt_type ::= COLON type */
+      case 77: /* literal ::= KW_TRUE */
 #line 178 "..\\source\\ParserBase.y"
-{ yygotominor.yy81=yymsp[0].minor.yy81; }
+{ yygotominor.yy7 = new Literal(true); }
 #line 1426 "..\\source\\ParserBase.cpp"
+        break;
+      case 78: /* literal ::= KW_FALSE */
+#line 179 "..\\source\\ParserBase.y"
+{ yygotominor.yy7 = new Literal(false); }
+#line 1431 "..\\source\\ParserBase.cpp"
+        break;
+      case 79: /* type ::= KW_INTEGER */
+#line 182 "..\\source\\ParserBase.y"
+{ yygotominor.yy81=SimpleType::eInteger; }
+#line 1436 "..\\source\\ParserBase.cpp"
+        break;
+      case 80: /* type ::= KW_NUMBER */
+#line 183 "..\\source\\ParserBase.y"
+{ yygotominor.yy81=SimpleType::eNumber; }
+#line 1441 "..\\source\\ParserBase.cpp"
+        break;
+      case 81: /* type ::= KW_STRING */
+#line 184 "..\\source\\ParserBase.y"
+{ yygotominor.yy81=SimpleType::eString; }
+#line 1446 "..\\source\\ParserBase.cpp"
+        break;
+      case 82: /* type ::= KW_VAR */
+      case 84: /* opt_type ::= */ yytestcase(yyruleno==84);
+#line 185 "..\\source\\ParserBase.y"
+{ yygotominor.yy81=SimpleType::eUndef; }
+#line 1452 "..\\source\\ParserBase.cpp"
+        break;
+      case 83: /* opt_type ::= COLON type */
+#line 188 "..\\source\\ParserBase.y"
+{ yygotominor.yy81=yymsp[0].minor.yy81; }
+#line 1457 "..\\source\\ParserBase.cpp"
         break;
       default:
       /* (0) program ::= function_list */ yytestcase(yyruleno==0);
@@ -1495,6 +1526,7 @@ static void yy_syntax_error(
 /************ Begin %syntax_error code ****************************************/
 #line 15 "..\\source\\ParserBase.y"
 
+	yymajor;
 	int expected[YYNOCODE]; 
 	int* cur = expected;
     for (int i = 0; i < YYNOCODE; ++i) 
@@ -1503,7 +1535,7 @@ static void yy_syntax_error(
 		if (a < YYNSTATE + YYNRULE) { *cur=i; cur++; }
 	}
 	pParser->OnError(TOKEN, expected, cur-expected);
-#line 1507 "..\\source\\ParserBase.cpp"
+#line 1539 "..\\source\\ParserBase.cpp"
 /************ End %syntax_error code ******************************************/
   BaseParseARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }

@@ -40,3 +40,4 @@ HEADERS   		+= $$files(source/*.h, recursive=true)
 FORMS     		+= $$files(source/*.ui, recursive=true) 
 RESOURCES 		+= source/resource.qrc
 LEMON_SOURCES 	+= $$files(source/*.y, recursive=true) 
+

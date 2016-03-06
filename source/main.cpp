@@ -45,7 +45,7 @@ void test()
 	file.open( QFile::ReadOnly );
 	QByteArray data = file.readAll();
 
-	parser.Parse( (const unsigned char*)data.constData(), (const unsigned char*)data.constEnd() );
+	parser.Parse( "main.rcad", (const unsigned char*)data.constData(), (const unsigned char*)data.constEnd() );
 
 
 }

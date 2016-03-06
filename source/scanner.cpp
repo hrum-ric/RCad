@@ -1,22 +1,32 @@
 #include "scanner.h"
 #include "ParserBase.h"
 
-Scanner::Scanner() : m_start(nullptr), m_end(nullptr), m_cursor(nullptr), m_line(1)
+Scanner::Scanner() : m_start(nullptr), m_end(nullptr), m_cursor(nullptr), m_lineStart(nullptr), m_lineNumber(1)
 {}
 
 void Scanner::reset( const unsigned char* start, const unsigned char* end )
 {
-	m_start = m_cursor = start;
+	m_lineStart = m_start = m_cursor = start;
 	m_end = end;
-	m_line = 1;
+	m_lineNumber = 1;
 }
 
-Scanner::Token Scanner::nextToken()
+Token Scanner::nextToken()
+{
+	int firstLine, firstColumn;
+	Token token = _nextToken(firstLine, firstColumn);
+	token.setPosition(firstLine, firstColumn, m_lineNumber, m_cursor - m_lineStart);
+	return token;
+}
+
+Token Scanner::_nextToken(int& firstLine, int& firstColumn)
 {
 start:
 	// end of string, nothing left to scan
-	if( m_cursor >= m_end ) return TOKEN_ENDFILE;
+	if( m_cursor >= m_end ) return Token(TOKEN_ENDFILE);
 	m_tokenStart = m_cursor;
+	firstLine = m_lineNumber;
+	firstColumn = (m_cursor - m_lineStart);
 
 	char c = *m_cursor;
 	switch( c )
@@ -84,7 +94,9 @@ start:
 	// keyword or identifier
 	if( _is7bitLetter( c ) )
 	{
-		return _scanKeywordOrIdentifier();
+		Token tok = _scanKeywordOrIdentifier();
+		if( tok.tokenID()== TOKEN_IDENTIFIER ) return Token(TOKEN_IDENTIFIER, m_tokenStart, m_cursor);
+		return tok;
 	}
 	// identifier
 	if( _isValidIdentifier( true ) )
@@ -108,7 +120,7 @@ unsigned char to7bitUpper( unsigned char c )
 }
 
 // scan an integer or a real
-Scanner::Token Scanner::_scanNumber()
+Token Scanner::_scanNumber()
 {
 	long long integer = 0;
 
@@ -156,7 +168,7 @@ Scanner::Token Scanner::_scanNumber()
 }
 
 // scan a string
-Scanner::Token Scanner::_scanString()
+Token Scanner::_scanString()
 {
 	while( true )
 	{
@@ -189,11 +201,12 @@ Scanner::Token Scanner::_scanString()
 // skip a new line and count line number
 void Scanner::_skipNewLigne()
 {
-	m_line++;
-
 	if( m_cursor[0] == '\n' && m_cursor[1] == '\r' ||
 		m_cursor[0] == '\r' && m_cursor[1] == '\n' ) m_cursor++;
 	m_cursor++;
+
+	m_lineStart = m_cursor;
+	m_lineNumber++;
 }
 
 // get the current utf8 character, and the length in byte of the letter
@@ -287,7 +300,7 @@ void Scanner::_skipMultilineComment()
 }
 
 // parse an identifier
-Scanner::Token Scanner::_scanIdentifier()
+Token Scanner::_scanIdentifier()
 {
 	while( m_cursor < m_end )
 	{
@@ -354,7 +367,7 @@ Scanner::Token Scanner::_scanIdentifier()
 													return _scanIdentifier();
 
 // scan to find if the word is a keyword or an identifier
-Scanner::Token Scanner::_scanKeywordOrIdentifier()
+Token Scanner::_scanKeywordOrIdentifier()
 {
 	switch( to7bitUpper(*m_cursor) )
 	{
