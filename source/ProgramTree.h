@@ -271,4 +271,17 @@ private:
 	std::vector<std::unique_ptr<FunctionDecl>> m_functionList;
 };
 
+class Program
+{
+public:
+	void AddProgramModule(ProgramModule* module)		{ m_moduleList.emplace_back(module); }
+	void AddErrorModule(const ModuleErrorList& module)	{ m_errorList.AddModule(module); }
+
+	ErrorList getErrorList() const						{ return m_errorList; }
+
+private:
+	std::vector<std::unique_ptr<ProgramModule>> m_moduleList;
+	ErrorList									m_errorList;
+};
+
 #endif // __PROGRAM_TREE__

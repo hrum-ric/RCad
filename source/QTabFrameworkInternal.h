@@ -34,6 +34,8 @@ public:
 	int insertTab( int index, QWidget* widget, const QString& label );
 	void removeTab( int index );
 
+	bool isEmpty();
+
 protected:
 	QTabFramework::InsertPolicies GetInsertPolicies();
 	virtual void dragEnterEvent( QDragEnterEvent* event );

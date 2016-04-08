@@ -1,10 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
 #include <QTreeView>
+#include <memory>
 #include "QTabFramework.h"
 class Project;
+class Program;
+class ErrorPanel;
+class TokenPositionBase;
+class CodeEditor;
 
 namespace Ui {
 class MainWindow;
@@ -27,8 +31,11 @@ private slots:
 	void on_CloseProject_triggered();
 	void on_SaveAll_triggered();
 	void on_ViewProject_triggered();
+	void on_ViewError_triggered();
+	void on_Compile_triggered();
 	void on_ProjectView_customContextMenuRequested(const QPoint &pos);
 	void on_ProjectView_clicked(const QModelIndex& index);
+	void on_focuschanged(QWidget* now);
 
 	void __OpenRecentFile();
     void __AddFolder(QModelIndex);
@@ -38,6 +45,7 @@ private slots:
     void __Edit(QModelIndex);
     void __Rename(QModelIndex);
     void __Remove(QModelIndex);
+	void __gotocode(QString file, const TokenPositionBase& position);
 
 protected:
 	void closeEvent(QCloseEvent *event) override;
@@ -53,14 +61,18 @@ private:
 	bool		__bSaveAll();
 	void		__SaveEnv();
 	void		__RestoreEnv();
+	CodeEditor* __Edit(QString identifier, QString filename, bool askCreate);
 	template<class T> bool __bSaveElement( T* element );
 
 private:
-	QTreeView*				ProjectTree;
-	QMenu*					RecentProjectMenu;
-	QList<QAction*>			recentFiles;
-	QAction*				CloseProjectAction;
-	QScopedPointer<Project> project;
+	QTreeView*					m_projectTree;
+	ErrorPanel*					m_errorPanel;
+	QMenu*						m_recentProjectMenu;
+	QList<QAction*>				m_recentFiles;
+	QAction*					m_closeProjectAction;
+	QAction*					m_saveDocument;
+	std::unique_ptr<Project>	m_project;
+	std::unique_ptr<Program>	m_program;
 };
 
 #endif // MAINWINDOW_H

@@ -13,8 +13,16 @@ class RCadSciLexer : public QsciLexerCustom
 public:
 	enum
 	{
-		Default = 0,
-		Comment = 1,
+		Default= 0,
+		Number,
+		String,
+		Operator,
+		Type,
+		Keywords,
+		Period,
+		Bracket,
+		Parenthesis,
+		Identifier,
 		MaxStyle
 	};
 
@@ -25,12 +33,7 @@ public:
 	virtual QString description( int ) const Q_DECL_OVERRIDE;
 	virtual void styleText( int start, int end ) Q_DECL_OVERRIDE;
 	virtual QColor defaultColor( int ) const Q_DECL_OVERRIDE;
-	virtual QFont  defaultFont( int ) const Q_DECL_OVERRIDE;
-	virtual QColor defaultPaper( int ) const Q_DECL_OVERRIDE;
 
-
-private:
-	QsciStyle getStyle( int );
 };
 
 #endif // __RCAD_SCI_LEXER__

@@ -13,6 +13,9 @@
 #include "project.h"
 #include "newfiledialog.h"
 #include "codeeditor.h"
+#include "Compiler.h"
+#include "ProgramTree.h"
+#include "ErrorPanel.h"
 
 MainWindow::MainWindow() : QTabFramework()
 {
@@ -23,6 +26,7 @@ MainWindow::MainWindow() : QTabFramework()
 	__upadateRecentFileActions(nullptr);
 	
 	QMetaObject::connectSlotsByName(this);
+	connect(this,&QTabFramework::focuschanged, this, &MainWindow::on_focuschanged);
 }
 
 MainWindow::~MainWindow()
@@ -46,17 +50,22 @@ void MainWindow::__CreateMenu()
 	OpenProjectAction->setObjectName("OpenProject");
 	FileMenu->addAction(OpenProjectAction);
 	// File/Recent
-	RecentProjectMenu = new QMenu(tr("Recent project"), FileMenu);
-	FileMenu->addAction(RecentProjectMenu->menuAction());
+	m_recentProjectMenu = new QMenu(tr("Recent project"), FileMenu);
+	FileMenu->addAction(m_recentProjectMenu->menuAction());
+	FileMenu->addSeparator();
+	// File/Save
+	m_saveDocument = new QAction(tr("Save"), this);
+	m_saveDocument->setEnabled(false);
+	FileMenu->addAction(m_saveDocument);
 	// File/Save all
 	QAction* SaveAllAction = new QAction(tr("Save all"), this);
 	SaveAllAction->setObjectName( "SaveAll" );
 	FileMenu->addAction(SaveAllAction);
 	// File/Close project
-	CloseProjectAction = new QAction(tr("Close project"), this);
-	CloseProjectAction->setEnabled(false);
-	CloseProjectAction->setObjectName( "CloseProject" );
-	FileMenu->addAction(CloseProjectAction);
+	m_closeProjectAction = new QAction(tr("Close project"), this);
+	m_closeProjectAction->setEnabled(false);
+	m_closeProjectAction->setObjectName( "CloseProject" );
+	FileMenu->addAction(m_closeProjectAction);
 	FileMenu->addSeparator();
 	// File/Exit
 	QAction* ExitAction = new QAction(tr("Exit"), this);
@@ -70,6 +79,14 @@ void MainWindow::__CreateMenu()
 	QAction* ViewProjectAction = new QAction( tr( "Project explorer" ), this );
 	ViewProjectAction->setObjectName( "ViewProject" );
 	ViewMenu->addAction( ViewProjectAction );
+	// View/Error
+	QAction* ViewErrorAction = new QAction(tr("Error list"), this);
+	ViewErrorAction->setObjectName("ViewError");
+	ViewMenu->addAction(ViewErrorAction);
+
+	QAction* CompileAction = new QAction(tr("Compile"), this);
+	CompileAction->setObjectName("Compile");
+	ViewMenu->addAction(CompileAction);
 
 	// Edit
 	QMenu* EditMenu = new QMenu(tr("&Edit"),menuBar);
@@ -78,16 +95,20 @@ void MainWindow::__CreateMenu()
 
 void MainWindow::__CreateProjectView()
 {
-	ProjectTree = new QTreeView();
-	ProjectTree->setObjectName( PROJECT_TREEVIEW_NAME );
-	ProjectTree->setWindowTitle(tr("Project"));
-	ProjectTree->setRootIsDecorated(true);
-	ProjectTree->setContextMenuPolicy(Qt::CustomContextMenu);
-	ProjectTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	ProjectTree->setDragDropMode( QAbstractItemView::InternalMove );
-	ProjectTree->header()->setDefaultSectionSize(0);
-	addTab(ProjectTree,QTabFramework::InsertLeft);
+	m_projectTree = new QTreeView();
+	m_projectTree->setObjectName( PROJECT_TREEVIEW_NAME );
+	m_projectTree->setWindowTitle(tr("Project"));
+	m_projectTree->setRootIsDecorated(true);
+	m_projectTree->setHeaderHidden(true);
+	m_projectTree->setContextMenuPolicy(Qt::CustomContextMenu);
+	m_projectTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	m_projectTree->setDragDropMode( QAbstractItemView::InternalMove );
+	m_projectTree->header()->setDefaultSectionSize(0);
+	addTab(m_projectTree,QTabFramework::InsertLeft);
 
+	m_errorPanel = new ErrorPanel();
+	m_errorPanel->setObjectName(ERROR_PANEL_NAME);
+	connect(m_errorPanel,&ErrorPanel::gotoerror,this, &MainWindow::__gotocode);
 }
 
 void MainWindow::__restoreSettings()
@@ -101,7 +122,7 @@ void MainWindow::__restoreSettings()
 QStringList MainWindow::__getMidifiedFileList()
 {
 	QStringList modifiedFiles;
-	if( project->isModified() ) modifiedFiles.append( project->filename() );
+	if( m_project->isModified() ) modifiedFiles.append( m_project->filename() );
 	QList<CodeEditor*> editorList = findWidget<CodeEditor>();
 	for( auto code : editorList )
 	{ 
@@ -114,7 +135,7 @@ QStringList MainWindow::__getMidifiedFileList()
 // close the project. Return false if the action must be canceled
 bool MainWindow::__bCloseProject()
 {
-    if( project )
+    if( m_project )
     {
 		QStringList modifiedFiles = __getMidifiedFileList();
 		if( !modifiedFiles.isEmpty() )
@@ -144,9 +165,9 @@ bool MainWindow::__bCloseProject()
 		QList<CodeEditor*> editorList = findWidget<CodeEditor>();
 		for( auto code : editorList ) { QTabFramework::removeTab( code );  }
 		// close project
-        project.reset();
+        m_project.reset();
     }
-    ProjectTree->setModel(nullptr);
+    m_projectTree->setModel(nullptr);
     return true;
 }
 
@@ -154,18 +175,18 @@ void MainWindow::__initRecentFileActions()
 {
     QSettings settings;
     int maxRecentFiles = settings.value("maxRecentFiles",10).toInt();
-    while( recentFiles.count() < maxRecentFiles )
+    while( m_recentFiles.count() < maxRecentFiles )
     {
         QAction* action = new QAction(this);
         action->setVisible(false);
-		RecentProjectMenu->addAction(action);
+		m_recentProjectMenu->addAction(action);
         connect(action, &QAction::triggered, this, &MainWindow::__OpenRecentFile);
-        recentFiles.push_back(action);
+        m_recentFiles.push_back(action);
     }
-    while( recentFiles.count() > maxRecentFiles )
+    while( m_recentFiles.count() > maxRecentFiles )
     {
-        QAction* action = recentFiles.takeLast();
-		RecentProjectMenu->removeAction(action);
+        QAction* action = m_recentFiles.takeLast();
+		m_recentProjectMenu->removeAction(action);
     }
 }
 
@@ -181,9 +202,9 @@ void MainWindow::__upadateRecentFileActions(const QString* filename)
         files.push_front(*filename);
         bChanged = true;
     }
-    if( files.count() > recentFiles.count() )
+    if( files.count() > m_recentFiles.count() )
     {
-        while( files.count() > recentFiles.count() ) files.pop_back();
+        while( files.count() > m_recentFiles.count() ) files.pop_back();
         bChanged = true;
     }
     if( bChanged ) settings.setValue("recentFileList",files);
@@ -191,15 +212,15 @@ void MainWindow::__upadateRecentFileActions(const QString* filename)
     for( i=0; i<files.count(); i++ )
     {
         QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
-        recentFiles[i]->setText(text);
-        recentFiles[i]->setData(files[i]);
-        recentFiles[i]->setVisible(true);
+        m_recentFiles[i]->setText(text);
+        m_recentFiles[i]->setData(files[i]);
+        m_recentFiles[i]->setVisible(true);
     }
-    for( ; i<recentFiles.count(); i++ )
+    for( ; i<m_recentFiles.count(); i++ )
     {
-        recentFiles[i]->setVisible(false);
+        m_recentFiles[i]->setVisible(false);
     }
-	RecentProjectMenu->setEnabled(files.count()>0);
+	m_recentProjectMenu->setEnabled(files.count()>0);
 }
 
 void MainWindow::__OpenRecentFile()
@@ -216,16 +237,16 @@ void MainWindow::__OpenRecentFile()
 
 void MainWindow::LoadProject(const QString &fileName)
 {
-	Q_ASSERT(project == nullptr);
+	Q_ASSERT(m_project == nullptr);
 
     QString errorString;
-	project.reset(Project::pLoadProject(fileName, errorString));
-	if ( project )
+	m_project.reset(Project::pLoadProject(fileName, errorString));
+	if ( m_project )
     {
-        ProjectTree->setModel(project.data());
+        m_projectTree->setModel(m_project.get());
         __upadateRecentFileActions(&fileName);
 		__RestoreEnv();
-		CloseProjectAction->setEnabled( true );
+		m_closeProjectAction->setEnabled( true );
     }
     else
     {
@@ -249,11 +270,11 @@ void MainWindow::on_NewProject_triggered()
             if( !fileName.endsWith("rcad.prj") ) fileName.append(".rcad.prj");
 			
 			QString errorString;
-			project.reset(Project::pCreateProject(fileName, errorString));
-			if (project)
+			m_project.reset(Project::pCreateProject(fileName, errorString));
+			if (m_project)
 			{
-				ProjectTree->setModel(project.data());
-				CloseProjectAction->setEnabled(true);
+				m_projectTree->setModel(m_project.get());
+				m_closeProjectAction->setEnabled(true);
 				__upadateRecentFileActions(&fileName);
 			}
 			else
@@ -274,7 +295,7 @@ void MainWindow::on_OpenProject_triggered()
 {
     if( __bCloseProject() )
     {
-		CloseProjectAction->setEnabled(true);
+		m_closeProjectAction->setEnabled(true);
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open Project"), QDir::homePath(), tr("RCad project (*.rcad.prj)"));
         if( !fileName.isEmpty() ) LoadProject(fileName);
     }
@@ -302,9 +323,9 @@ bool MainWindow::__bSaveElement( T* element )
 }
 bool MainWindow::__bSaveAll()
 {
-    if( project )
+    if( m_project )
     {
-		if( !__bSaveElement( project.data() ) ) return false;
+		if( !__bSaveElement( m_project.get() ) ) return false;
 		QList<CodeEditor*> editorList = findWidget<CodeEditor>();
 		for( auto code : editorList ) { if( !__bSaveElement( code )) return false; }
     }
@@ -340,19 +361,46 @@ void MainWindow::on_ViewProject_triggered()
 {
 	if( getWidgetByName<QTreeView>( PROJECT_TREEVIEW_NAME ) != nullptr )
 	{
-		ProjectTree->setFocus();
+		m_projectTree->setFocus();
 		return;
 	}
-	addTab( ProjectTree, QTabFramework::InsertFullLeft, nullptr );
+	addTab( m_projectTree, QTabFramework::InsertFullLeft, nullptr );
+}
+void MainWindow::on_ViewError_triggered()
+{
+	if (getWidgetByName<ErrorPanel>(ERROR_PANEL_NAME ) != nullptr)
+	{
+		m_errorPanel->setFocus();
+		return;
+	}
+	addTab(m_errorPanel, QTabFramework::InsertFullBottom, nullptr);
+}
+
+void MainWindow::on_Compile_triggered()
+{
+	Compiler compiler;
+	QStringList fileList = m_project->listAllFile();
+
+	QList<Compiler::SourceInfo> list;
+	for(QString file : fileList)
+	{
+		list.append( Compiler::SourceInfo(file) );
+	}
+
+	// 
+	Program* program = compiler.compile(list);
+	// update ui
+	m_errorPanel->setErrorList(program->getErrorList());
+	m_program.reset(program);
 }
 
 void MainWindow::on_ProjectView_customContextMenuRequested(const QPoint& pos)
 {
-    if( project != nullptr )
+    if( m_project != nullptr )
     {
-        QPoint globalPos = ProjectTree->mapToGlobal(pos);
-        QModelIndex index = ProjectTree->indexAt(pos);
-        Project::eITEMTYPE type = project->eGetType(index);
+        QPoint globalPos = m_projectTree->mapToGlobal(pos);
+        QModelIndex index = m_projectTree->indexAt(pos);
+        Project::eITEMTYPE type = m_project->eGetType(index);
         QAction* action;
 
         QMenu myMenu;
@@ -433,80 +481,105 @@ void MainWindow::on_ProjectView_clicked(const QModelIndex& index)
 	__Edit( index );
 }
 
+void MainWindow::on_focuschanged(QWidget* now)
+{
+	if( now && !now->windowTitle().isEmpty() && now->metaObject()->indexOfSlot("save()")>-1 )
+	{ 
+		m_saveDocument->setText(tr("Save (%1)").arg(now->windowTitle()));
+		m_saveDocument->setEnabled(true);
+		connect(m_saveDocument,SIGNAL(triggered()),now,SLOT(save()));
+	}
+	else
+	{
+		m_saveDocument->disconnect();
+		m_saveDocument->setText(tr("Save"));
+		m_saveDocument->setEnabled(false);
+	}
+}
+
 void MainWindow::__AddFolder(QModelIndex index)
 {
-    if( project )
+    if( m_project )
     {
-        QModelIndex newFolder = project->AddFolder(index);
-        if( newFolder.isValid() ) ProjectTree->edit(newFolder);
+        QModelIndex newFolder = m_project->AddFolder(index);
+        if( newFolder.isValid() ) m_projectTree->edit(newFolder);
     }
 }
 void MainWindow::__AddNewFile(QModelIndex index)
 {
-    if( project )
+    if( m_project )
     {
-		QDir DefaultDir = QFileInfo(project->filename()).dir();
+		QDir DefaultDir = QFileInfo(m_project->filename()).dir();
 		newFileDialog d(DefaultDir,this);
         if( QDialog::Accepted == d.exec() )
         {
-			project->AddSourceFile(index, d.getFullName());
+			m_project->AddSourceFile(index, d.getFullName());
         }
     }
 }
 void MainWindow::__AddExistingFile(QModelIndex index)
 {
-    if( project )
+    if( m_project )
     {
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open Project"), QFileInfo(project->filename()).filePath(), tr("RCad source (*.rcad)"));
-        if( !fileName.isEmpty() && project ) project->AddSourceFile(index,fileName);
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Open Project"), QFileInfo(m_project->filename()).filePath(), tr("RCad source (*.rcad)"));
+        if( !fileName.isEmpty() && m_project ) m_project->AddSourceFile(index,fileName);
     }
 }
 void MainWindow::__AddLibrary()
 {
-    if( project ) project->AddLibrary("aaa");
+    if( m_project ) m_project->AddLibrary("aaa");
 }
 void MainWindow::__Edit( QModelIndex index )
 {
-	Project::eITEMTYPE eType = project->eGetType( index );
+	Project::eITEMTYPE eType = m_project->eGetType( index );
 	if( eType != Project::eSource && eType != Project::eLibrary ) return;
 
-	QString	name = project->GetElementIdentifier( index );
-	CodeEditor* editor = getWidgetByName<CodeEditor>( name );
+	QString	identifier = m_project->GetElementIdentifier( index );
+	QString	filename = m_project->GetFileName(index);
+
+	__Edit(identifier, filename, eType == Project::eSource);
+}
+
+CodeEditor* MainWindow::__Edit(QString identifier, QString filename, bool askCreate)
+{
+	CodeEditor* editor = getWidgetByName<CodeEditor>(identifier);
 	if( editor )
 	{
 		giveFocus( editor );
-		return;
+		return editor;
 	}
 	// create new editor
-	editor = new CodeEditor( name, project->GetFileName( index ) );
-	if( !editor->bRead( eType == Project::eSource, true ) )
+	editor = new CodeEditor(identifier, filename);
+	if( !editor->bRead(askCreate, true ) )
 	{
 		delete editor;
-		return;
+		return nullptr;
 	}
 	// search best placement
-	QWidget* placement = getWidgetByName<CodeEditor>("");
-	if( placement ) { addTab( editor, InsertOnTop, placement ); return; }
+	auto otherEditor = findWidget<CodeEditor>();
+	if( !otherEditor.isEmpty() ) { addTab( editor, InsertOnTop, otherEditor.first() ); return editor; }
 
-	placement = getWidgetByName<QTreeView>( "", false );
-	if( placement ) 
+	auto project = getWidgetByName<QTreeView>(PROJECT_TREEVIEW_NAME, false );
+	if( project )
 	{ 
-		InsertPolicy policy = bestInsertPolicy( placement, false );
+		QWidget* position=nullptr;
+		InsertPolicy policy = bestInsertPolicy(project, false, position );
 		if( policy != NoInsert )
 		{
-			addTab( editor, InsertRight, placement );
-			return;
+			addTab( editor, policy, position);
+			return editor;
 		}
 	}
 	addTab( editor, InsertOnTop, nullptr );
+	return editor;
 }
 void MainWindow::__Rename(QModelIndex index)
 {
-    ProjectTree->edit(index);
+    m_projectTree->edit(index);
 }
 void MainWindow::__Remove(QModelIndex index)
 {
-    if( project ) project->Remove(index);
+    if( m_project ) m_project->Remove(index);
 }
 
 void MainWindow::__SaveEnv()
@@ -514,7 +587,7 @@ void MainWindow::__SaveEnv()
 	QJsonDocument env = saveLayout();
 	QByteArray json_env = env.toJson( QJsonDocument::Indented );
 	
-	QSaveFile file( project->filename()+".env" );
+	QSaveFile file( m_project->filename()+".env" );
 	if( !file.open( QIODevice::WriteOnly ) ) return;
 	file.write( json_env );
 	file.commit();
@@ -522,18 +595,22 @@ void MainWindow::__SaveEnv()
 
 void MainWindow::__RestoreEnv()
 {
-	QFile file( project->filename() + ".env" );
+	QFile file( m_project->filename() + ".env" );
 	if( !file.open( QIODevice::ReadOnly ) ) return;
 	QJsonDocument env = QJsonDocument::fromJson(file.readAll());
 
 	restoreLayout( env, [this]( const QString& name ) ->QWidget* {
 		if( name.compare( PROJECT_TREEVIEW_NAME, Qt::CaseInsensitive ) == 0 )
 		{
-			return ProjectTree;
+			return m_projectTree;
+		}
+		else if (name.compare(ERROR_PANEL_NAME, Qt::CaseInsensitive) == 0)
+		{
+			return m_errorPanel;
 		}
 		else
 		{
-			QString fileName = project->GetFileNameFromIdentifier( name );
+			QString fileName = m_project->GetFileNameFromIdentifier( name );
 			if( !fileName.isEmpty() )
 			{
 				CodeEditor* editor = new CodeEditor( name, fileName );
@@ -543,4 +620,10 @@ void MainWindow::__RestoreEnv()
 		}
 		return nullptr;
 	} );
+}
+
+void MainWindow::__gotocode(QString file, const TokenPositionBase& position)
+{
+	CodeEditor* editor = __Edit(SOURCE_IDENTIFIR_PREFIX + QFileInfo(file).baseName(), file, false);
+	editor->setCursorPosition(position.m_startLine-1,position.m_startColumn);
 }

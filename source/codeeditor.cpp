@@ -2,6 +2,7 @@
 #include "rcadscilexer.h"
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QShortcut>
 
 CodeEditor::CodeEditor( QString name, QString fileName ) : QsciScintilla()
 {
@@ -10,6 +11,8 @@ CodeEditor::CodeEditor( QString name, QString fileName ) : QsciScintilla()
 	setWindowTitle(QFileInfo(fileName).baseName()+" [*]");
 	connect( this, &QsciScintilla::modificationChanged, this, &CodeEditor::updateTitle );
 	setAttribute( Qt::WA_DeleteOnClose );
+
+	new QShortcut(QKeySequence::Save, this, SLOT(save()) );
 
 	setLexer( new RCadSciLexer() );
 }
@@ -81,4 +84,18 @@ bool CodeEditor::bSave( QString& errorString )
 	}
 	setModified( false );
 	return true;
+}
+
+void CodeEditor::save()
+{
+	QString errorString;
+	if (isModified() && !bSave(errorString))
+	{
+		QMessageBox msgBox;
+		msgBox.setIcon(QMessageBox::Critical);
+		msgBox.setText(tr("Error while saving <%1>.").arg(filename()));
+		msgBox.setDetailedText(errorString);
+		msgBox.exec();
+	}
+
 }

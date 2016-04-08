@@ -10,7 +10,7 @@ class Project : public QAbstractItemModel
 {
     class TreeItem;
 public:
-    enum eITEMTYPE { eProject, eFolder, eSource, eLibraries, eLibrary, eNone };
+    enum eITEMTYPE { eProject, eFolder, eSource, eLibraries, eLibrary, eRoot, eNone };
 
 public:
 	static Project* pLoadProject(const QString& fileName, QString& errorString);
@@ -20,6 +20,8 @@ public:
     QString     filename() const						{ return projectFilename; }
     bool        isModified() const;
     bool        bSave(QString& errorString);
+
+	QStringList listAllFile();
 
 public: // QAbstractItemModel
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
@@ -62,6 +64,7 @@ private:
 	QString				__GetFileName( Project::TreeItem *item );
 	void				__encodeItem( QDataStream& itemsStream, Project::TreeItem* item ) const;
 	Project::TreeItem*	__decodeItem( QDataStream& itemsStream ) const;
+	void				__GetFileNames(QStringList* list, Project::TreeItem *item);
 
 private:
     class TreeItem

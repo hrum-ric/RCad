@@ -49,7 +49,7 @@ Project* Project::pCreateProject(const QString& fileName, QString& errorString)
 
 Project::Project() : modified(false)
 {
-    rootItem = new TreeItem("", eNone);
+    rootItem = new TreeItem("", eRoot);
     projectItem = new TreeItem("", eProject);
     rootItem->appendChild(projectItem);
     librariesItem = new TreeItem(tr("Libraries"), eLibraries);
@@ -272,6 +272,34 @@ QString	Project::__GetFileName( Project::TreeItem *item )
 	return QString();
 }
 
+QStringList Project::listAllFile()
+{
+	QStringList list;
+	__GetFileNames(&list, rootItem);
+	return list;
+}
+
+void Project::__GetFileNames(QStringList* list, Project::TreeItem *item)
+{
+	int childCount;
+
+	switch (item->type())
+	{
+	case eRoot:
+	case eProject:
+	case eFolder:
+	case eLibraries:
+		childCount = item->childCount(); 
+		for( int i=0; i<childCount; i++ )
+			__GetFileNames( list, item->child(i) );
+		break;
+	case eSource:
+	case eLibrary:
+		list->append( __GetFileName(item) );
+		break;
+	} 
+}
+
 QString Project::GetFileName(const QModelIndex &index)
 {
 	if (!index.isValid()) return QString();
@@ -381,6 +409,7 @@ void Project::Remove(QModelIndex &index)
     }
     case eProject:
     case eLibraries:
+	case eRoot:
     case eNone:
         break;
     }

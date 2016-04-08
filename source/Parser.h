@@ -14,7 +14,7 @@ public:
 	// get the program from the parsed source file
 	ProgramModule* takeProgram()		{ return m_module.release(); }
 	// get the errors produced by compilation of the source file
-	ModuleErrorList* takeErrorList()	{ return m_errorList.release(); }
+	const ModuleErrorList& ErrorList()	{ return m_errorList; }
 
 public:
 	void addFunction( FunctionDecl* function );
@@ -25,7 +25,7 @@ private:
 private:
 	Scanner								m_scanner;
 	std::unique_ptr<ProgramModule>		m_module;
-	std::unique_ptr<ModuleErrorList>	m_errorList;
+	ModuleErrorList						m_errorList;
 };
 
 #endif // __PARSER__

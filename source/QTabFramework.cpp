@@ -191,6 +191,11 @@ void QTabContainer::removeTab( int index )
 	setStyleSheet( styleSheet() );
 }
 
+bool QTabContainer::isEmpty()
+{
+	return count()==0;
+}
+
 void QTabContainer::handleCurrentChanged( int index )
 {
 	QWidget* widget = this->widget( index );
@@ -542,7 +547,12 @@ QTabFramework::~QTabFramework()
 
 void QTabFramework::addTab( QWidget* widget, InsertPolicy insertPolicy, QWidget* position )
 {
-	QTabContainer* container = position ? dynamic_cast<QTabContainer*>(position->parent()->parent()) : 0;
+	QTabContainer* container = nullptr;
+	if( position )
+	{
+		container = dynamic_cast<QTabContainer*>(position);
+		if(container ==nullptr) container = dynamic_cast<QTabContainer*>(position->parent()->parent());
+	}
 
 	widget->installEventFilter( this );
 	addTab( widget, container, insertPolicy, -1 );
@@ -837,6 +847,8 @@ void QTabFramework::handleFocusChanged( QWidget* old, QWidget* now )
 				tabWindow->focusTab = 0;
 		}
 	}
+
+	emit focuschanged(now);
 }
 
 bool QTabFramework::removeContainerIfEmpty( QTabContainer* tabContainer, bool hide )
@@ -1107,24 +1119,39 @@ QTabFramework::InsertPolicy QArrowCenter::findInsertPolicy( const QPoint& global
 	return QTabFramework::InsertFloating;
 }
 
-QTabFramework::InsertPolicy QTabFramework::bestInsertPolicy( QWidget* widget, bool bVertical )
+QTabFramework::InsertPolicy QTabFramework::bestInsertPolicy(QWidget* widget, bool bVertical, QWidget*& position)
 {
-	QWidget* current = dynamic_cast<QTabContainer*>(widget->parent());
+	position = widget;
+
+	QWidget* current = dynamic_cast<QTabContainer*>(widget->parent()->parent());
 	if( current == nullptr ) return NoInsert;
 
 	forever
 	{
 		QSplitter* splitter = dynamic_cast<QSplitter*>(current->parent());
 		if( splitter == nullptr ) return bVertical ? InsertBottom : InsertRight;
+
+		auto curindex = splitter->indexOf(current);
+
 		if( bVertical && splitter->orientation() == Qt::Vertical )
-		{
+		{			
+			// if reference is last, insert before
 			if( splitter->indexOf( current ) + 1 == splitter->count() ) return InsertTop;
+			// bottom neighbour
+			auto neighbour = dynamic_cast<QTabContainer*>(splitter->widget(curindex + 1));
+			// if the neighbour is an empty container, insert into this container
+			if (neighbour && neighbour->isEmpty()) { position = neighbour; return InsertOnTop; }
 			return InsertBottom;
 		}
 		else if( !bVertical && splitter->orientation() == Qt::Horizontal )
 		{
-			if( splitter->indexOf( current ) + 1 == splitter->count() ) return InsertLeft;
-			return InsertRight;
+			// if reference is last, insert before
+			if (curindex + 1 == splitter->count() ) return InsertLeft;
+			// left neighbour
+			auto neighbour = dynamic_cast<QTabContainer*>(splitter->widget(curindex + 1));
+			// if the neighbour is an empty container, insert into this container
+			if (neighbour && neighbour->isEmpty() ) { position=neighbour; return InsertOnTop; }
+			return InsertRight; 
 		}
 		current = splitter;
 	}

@@ -72,7 +72,8 @@ public:
 	void removeTab( QWidget* widget );
 	void giveFocus( QWidget* widget );
 
-	InsertPolicy bestInsertPolicy( QWidget* widget, bool bVertical );
+	// choose best place to insert new widget, return policy and position
+	InsertPolicy bestInsertPolicy( QWidget* widget, bool bVertical, QWidget*& position);
 
 	template<typename T> 
 	T* getWidgetByName( QString name, bool inFloating=true )
@@ -94,6 +95,9 @@ public:
 	QJsonDocument saveLayout();
 	// restore tab layout	
 	void restoreLayout( const QJsonDocument& doc, restoreFactory factory );
+
+signals:
+	void focuschanged(QWidget* now);
 
 protected:
 	virtual void closeEvent( QCloseEvent* event );

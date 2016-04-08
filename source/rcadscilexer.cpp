@@ -3,9 +3,12 @@
 #include <QFont>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscistyle.h>
+#include <memory>
 #include "rcadscilexer.h"
+#include "scanner.h"
+#include "ParserBase.h"
 
-RCadSciLexer::RCadSciLexer( QObject *parent ) : QsciLexerCustom( parent )
+RCadSciLexer::RCadSciLexer( QObject *parent ): QsciLexerCustom( parent )
 {
 }
 
@@ -18,94 +21,130 @@ const char* RCadSciLexer::language() const
 	return "rcad";
 }
 
-QString RCadSciLexer::description( int style ) const
-{
-	switch( style )
-	{
-	case Default:
-		return "Default";
-	case Comment:
-		return "Comment";
-	}
-
-	return QString();
-}
-
 void RCadSciLexer::styleText( int start, int end )
 {
 	QString source;
-	int i;
 
 	if( !editor() )
 		return;
 
-	qDebug() << __FUNCTION__ << "start =" << start << " end =" << end;
-
-	int style = editor()->SendScintilla( QsciScintillaBase::SCI_GETSTYLEAT, start );
-
-	char *chars = (char *)malloc( end - start + 1 );
-	editor()->SendScintilla( QsciScintilla::SCI_GETTEXTRANGE, start, end, chars );
-	source = QString( chars );
-	free( chars );
-
-	qDebug() << "source =" << source;
+	auto buffer = std::make_unique<char[]>(end - start + 1);
+	editor()->SendScintilla( QsciScintilla::SCI_GETTEXTRANGE, start, end, buffer.get() );
 
 	startStyling( start, 0x1f );
-	QStringList list = source.split( "\n" );
-	for( i = 0; i < list.size(); i++ )
+
+	Scanner scanner;
+	auto string_start = (const unsigned char*)(buffer.get());
+	auto string_end = string_start+strlen(buffer.get());
+	scanner.reset( string_start, string_end );
+
+	for( Token token = scanner.nextToken(); token.tokenID() != TOKEN_ENDFILE; token = scanner.nextToken() )
 	{
-		QString line = list.at( i );
-		int len = line.size();
-		int style;
-		qDebug() << "line =" << line;
+		int style = Default;
 
-		if( line.startsWith( "//" ) )
+		switch (token.tokenID())
 		{
-			style = Comment;
+		case TOKEN_INTEGER:
+		case TOKEN_REAL:
+			style = Number;
+			break;
+		case TOKEN_STRING:
+			style = String;
+			break;
+		case TOKEN_EQ:
+		case TOKEN_NE:
+		case TOKEN_GT:
+		case TOKEN_GE:
+		case TOKEN_LT:
+		case TOKEN_LE:
+		case TOKEN_PLUS:
+		case TOKEN_MINUS:
+		case TOKEN_TIMES:
+		case TOKEN_DIVIDE:
+		case TOKEN_MODULO:
+			style = Operator;
+			break;
+		case TOKEN_KW_INTEGER:
+		case TOKEN_KW_NUMBER:
+		case TOKEN_KW_STRING:
+			style = Type;
+			break;
+		case TOKEN_KW_FUNCTION:
+		case TOKEN_KW_IF:
+		case TOKEN_KW_THEN:
+		case TOKEN_KW_ELSE:
+		case TOKEN_KW_FOR:
+		case TOKEN_KW_FROM:
+		case TOKEN_KW_TO:
+		case TOKEN_KW_DO:
+		case TOKEN_KW_IN:
+		case TOKEN_KW_BY:
+		case TOKEN_KW_END:
+		case TOKEN_KW_VAR:
+		case TOKEN_KW_AND:
+		case TOKEN_KW_OR:
+		case TOKEN_KW_NOT:
+		case TOKEN_KW_TRUE:
+		case TOKEN_KW_FALSE:
+			style = Keywords;
+			break;
+		case TOKEN_PERIOD:
+			style = Period;
+			break;
+		case TOKEN_LEFT_BRACKET:
+		case TOKEN_RIGHT_BRACKET:
+			style = Bracket;
+			break;
+		case TOKEN_LEFT_PARENTHESIS:
+		case TOKEN_RIGHT_PARENTHESIS:
+			style = Parenthesis;
+			break;
+		case TOKEN_IDENTIFIER:
+			style = Identifier;
+			break;
 		}
-		else
-		{
-			style = Default;
-		}
-		qDebug() << "Styling " << len << "bytes " << description( style );
-		setStyling( len, getStyle( style ) );
+		
+		int blankLen = token.start()-string_start;
+		setStyling(blankLen, Default);
+		setStyling(token.len(), style);
+		string_start = token.end();
+	} 
+}
 
+QString RCadSciLexer::description(int style) const
+{
+	switch (style)
+	{
+	case Default:		return tr("Default");
+	case Number:		return tr("Number");
+	case String:		return tr("String");
+	case Operator:		return tr("Operator");
+	case Type:			return tr("Type");
+	case Keywords:		return tr("Keywords");
+	case Period:		return tr("Period");
+	case Bracket:		return tr("Bracket");
+	case Parenthesis:	return tr("Parenthesis");
+	case Identifier:	return tr("Identifier");
 	}
+
+	return QString();
 }
 
 QColor RCadSciLexer::defaultColor( int style ) const
 {
 	switch( style )
 	{
-	case Default:
-		return QColor( 0xFF, 0x0, 0x0 );
-	case Comment:
-		return QColor( 0x0, 0xFF, 0x0 );
+	case Default:		return Qt::black;
+	case Number:		return Qt::darkRed;
+	case String:		return Qt::darkGreen;
+	case Operator:		return Qt::black;
+	case Type:			return Qt::darkBlue;
+	case Keywords:		return Qt::blue;
+	case Period:		return Qt::black;
+	case Bracket:		return Qt::black;
+	case Parenthesis:	return Qt::black;
+	case Identifier:	return Qt::black;
 	default:
 		return QColor( 0x0, 0x00, 0xFF );
-	}
-	return QsciLexer::defaultColor( style );
-}
-
-QFont  RCadSciLexer::defaultFont( int style ) const
-{
-	return QFont( "Courier New", 10 );
-}
-
-QColor RCadSciLexer::defaultPaper( int style ) const
-{
-	return QsciLexer::defaultPaper( style );
-}
-
-QsciStyle RCadSciLexer::getStyle( int style )
-{
-	if( style < MaxStyle )
-	{
-		return QsciStyle( style, description( style ), defaultColor( style ),
-						  defaultPaper( style ), defaultFont( style ) );
-	}
-	else
-	{
-		return QsciStyle( style );
 	}
 }

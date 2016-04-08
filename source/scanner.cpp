@@ -15,7 +15,7 @@ Token Scanner::nextToken()
 {
 	int firstLine, firstColumn;
 	Token token = _nextToken(firstLine, firstColumn);
-	token.setPosition(firstLine, firstColumn, m_lineNumber, m_cursor - m_lineStart);
+	token.setPosition(firstLine, firstColumn, m_lineNumber, m_cursor - m_lineStart, m_tokenStart, m_cursor);
 	return token;
 }
 

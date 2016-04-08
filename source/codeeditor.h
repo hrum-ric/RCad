@@ -16,6 +16,9 @@ public:
 	// save to file
 	bool bSave( QString& errorString );
 
+public slots:
+	void save();
+
 private:
 	void updateTitle( bool bModified );
 

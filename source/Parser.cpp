@@ -15,7 +15,7 @@ void RCADParser::Parse( QString module, const unsigned char* start, const unsign
 {
 	m_scanner.reset( start, end );
 	m_module.reset( new ProgramModule );
-	m_errorList.reset(new ModuleErrorList(module) );
+	m_errorList.Clear( module );
 
 #ifndef NDEBUG
 	BaseParseTrace( &LOG_PARSER, "parser" );
@@ -57,12 +57,12 @@ void RCADParser::OnError( const TokenBase& tok, const int* expected, unsigned in
 		message.append(QCoreApplication::translate("Error", "found : %1 \nExpected : %2").arg(_getExpected(tok.tokenID())).arg(expectedlist));
 	}
 
-	m_errorList->addError(tok.position(), message);
+	m_errorList.addError(tok.position(), message);
 }
 
 void RCADParser::OnStackOverflow()
 {
-	m_errorList->addError(TokenPosition(), QCoreApplication::translate("Error", "Parser stack overflow") );
+	m_errorList.addError(TokenPosition(), QCoreApplication::translate("Error", "Parser stack overflow") );
 }
 
 QString RCADParser::_getExpected(int expected)

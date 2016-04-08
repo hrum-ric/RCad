@@ -2,6 +2,7 @@
 #define RCAD_CONSTANTS_H
 
 #define PROJECT_TREEVIEW_NAME		"ProjectView"
+#define ERROR_PANEL_NAME			"ErrorPanel"
 #define SOURCE_IDENTIFIR_PREFIX		"S:"
 #define LIBRARY_IDENTIFIR_PREFIX	"L:"
 
