@@ -30,9 +30,13 @@ public:
 	~RCadSciLexer();
 
 	virtual const char *language() const Q_DECL_OVERRIDE;
-	virtual QString description( int ) const Q_DECL_OVERRIDE;
-	virtual void styleText( int start, int end ) Q_DECL_OVERRIDE;
-	virtual QColor defaultColor( int ) const Q_DECL_OVERRIDE;
+	virtual QString		description( int ) const Q_DECL_OVERRIDE;
+	virtual void		styleText( int start, int end ) Q_DECL_OVERRIDE;
+	virtual QColor		defaultColor( int ) const Q_DECL_OVERRIDE;
+			QString		sample( int ) const;
+
+			void		resetStyle( int );
+			void		resetAllStyle();
 
 };
 

@@ -18,6 +18,7 @@ public:
 
 public slots:
 	void save();
+	void PreferencesChanged();
 
 private:
 	void updateTitle( bool bModified );

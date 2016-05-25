@@ -16,6 +16,7 @@
 #include "Compiler.h"
 #include "ProgramTree.h"
 #include "ErrorPanel.h"
+#include "PreferenceDialog.h"
 
 MainWindow::MainWindow() : QTabFramework()
 {
@@ -91,6 +92,10 @@ void MainWindow::__CreateMenu()
 	// Edit
 	QMenu* EditMenu = new QMenu(tr("&Edit"),menuBar);
 	menuBar->addAction(EditMenu->menuAction());
+	// Edit/Option
+	QAction* PreferencesAction = new QAction(tr("Preferences"), this);
+	PreferencesAction->setObjectName("Preferences");
+	EditMenu->addAction(PreferencesAction);
 }
 
 void MainWindow::__CreateProjectView()
@@ -376,6 +381,15 @@ void MainWindow::on_ViewError_triggered()
 	addTab(m_errorPanel, QTabFramework::InsertFullBottom, nullptr);
 }
 
+void MainWindow::on_Preferences_triggered()
+{
+	PreferenceDialog dialog(this);
+	if (QDialog::Accepted == dialog.exec())
+	{
+		emit PreferencesChanged();
+	}
+}
+
 void MainWindow::on_Compile_triggered()
 {
 	Compiler compiler;
@@ -540,6 +554,13 @@ void MainWindow::__Edit( QModelIndex index )
 	__Edit(identifier, filename, eType == Project::eSource);
 }
 
+CodeEditor* MainWindow::__CreateCodeEditor(QString name, QString fileName)
+{
+	CodeEditor* editor = new CodeEditor(name, fileName);
+	connect(this, &MainWindow::PreferencesChanged, editor, &CodeEditor::PreferencesChanged);
+	return editor;
+}
+
 CodeEditor* MainWindow::__Edit(QString identifier, QString filename, bool askCreate)
 {
 	CodeEditor* editor = getWidgetByName<CodeEditor>(identifier);
@@ -549,7 +570,7 @@ CodeEditor* MainWindow::__Edit(QString identifier, QString filename, bool askCre
 		return editor;
 	}
 	// create new editor
-	editor = new CodeEditor(identifier, filename);
+	editor = __CreateCodeEditor(identifier, filename);
 	if( !editor->bRead(askCreate, true ) )
 	{
 		delete editor;
@@ -613,7 +634,7 @@ void MainWindow::__RestoreEnv()
 			QString fileName = m_project->GetFileNameFromIdentifier( name );
 			if( !fileName.isEmpty() )
 			{
-				CodeEditor* editor = new CodeEditor( name, fileName );
+				CodeEditor* editor = __CreateCodeEditor( name, fileName );
 				if( editor->bRead(false,false) ) return editor;
 				delete editor;
 			}

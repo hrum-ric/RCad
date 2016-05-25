@@ -125,9 +125,9 @@ QString RCadSciLexer::description(int style) const
 	case Bracket:		return tr("Bracket");
 	case Parenthesis:	return tr("Parenthesis");
 	case Identifier:	return tr("Identifier");
+	default:			return QString();
 	}
-
-	return QString();
+	static_assert(MaxStyle == Identifier + 1, "new style not implemented");
 }
 
 QColor RCadSciLexer::defaultColor( int style ) const
@@ -144,7 +144,39 @@ QColor RCadSciLexer::defaultColor( int style ) const
 	case Bracket:		return Qt::black;
 	case Parenthesis:	return Qt::black;
 	case Identifier:	return Qt::black;
-	default:
-		return QColor( 0x0, 0x00, 0xFF );
+	default:			return QColor( 0x0, 0x00, 0xFF );
 	}
+	static_assert(MaxStyle == Identifier + 1, "new style not implemented");
+}
+
+QString  RCadSciLexer::sample(int style) const
+{
+	switch (style)
+	{
+	case Default:		return tr("sample");
+	case Number:		return QStringLiteral("123.45");
+	case String:		return tr("\"this is a string\"");
+	case Operator:		return QStringLiteral("+-*<>=");
+	case Type:			return QStringLiteral("integer");
+	case Keywords:		return QStringLiteral("function");
+	case Period:		return QStringLiteral("...");
+	case Bracket:		return QStringLiteral("[]");
+	case Parenthesis:	return QStringLiteral("()");
+	case Identifier:	return tr("identifier");
+	default:			return tr("sample");
+	}
+	static_assert(MaxStyle==Identifier+1, "new style not implemented");
+}
+
+void RCadSciLexer::resetStyle(int style)
+{
+	setColor( defaultColor(style), style);
+	setPaper( defaultPaper(style), style);
+	setFont( defaultFont(style), style);
+}
+
+void RCadSciLexer::resetAllStyle()
+{
+	for( int i=0; i<MaxStyle; i++ )
+		resetStyle(i);
 }

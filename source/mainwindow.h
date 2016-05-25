@@ -33,19 +33,24 @@ private slots:
 	void on_ViewProject_triggered();
 	void on_ViewError_triggered();
 	void on_Compile_triggered();
+	void on_Preferences_triggered();
 	void on_ProjectView_customContextMenuRequested(const QPoint &pos);
 	void on_ProjectView_clicked(const QModelIndex& index);
 	void on_focuschanged(QWidget* now);
 
-	void __OpenRecentFile();
-    void __AddFolder(QModelIndex);
-    void __AddNewFile(QModelIndex);
-    void __AddExistingFile(QModelIndex);
-    void __AddLibrary();
-    void __Edit(QModelIndex);
-    void __Rename(QModelIndex);
-    void __Remove(QModelIndex);
-	void __gotocode(QString file, const TokenPositionBase& position);
+	void			__OpenRecentFile();
+    void			__AddFolder(QModelIndex);
+    void			__AddNewFile(QModelIndex);
+    void			__AddExistingFile(QModelIndex);
+    void			__AddLibrary();
+    void			__Edit(QModelIndex);
+	CodeEditor *	__CreateCodeEditor(QString name, QString fileName);
+    void			__Rename(QModelIndex);
+    void			__Remove(QModelIndex);
+	void			__gotocode(QString file, const TokenPositionBase& position);
+
+signals:
+	void PreferencesChanged();
 
 protected:
 	void closeEvent(QCloseEvent *event) override;

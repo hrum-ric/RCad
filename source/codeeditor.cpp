@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QSettings>
 
 CodeEditor::CodeEditor( QString name, QString fileName ) : QsciScintilla()
 {
@@ -14,12 +15,21 @@ CodeEditor::CodeEditor( QString name, QString fileName ) : QsciScintilla()
 
 	new QShortcut(QKeySequence::Save, this, SLOT(save()) );
 
-	setLexer( new RCadSciLexer() );
+	PreferencesChanged();
 }
 
 CodeEditor::~CodeEditor()
 {
 	qDebug("~CodeEditor");
+}
+
+void CodeEditor::PreferencesChanged()
+{
+	QSettings settings;
+
+	RCadSciLexer* lexer = new RCadSciLexer();
+	lexer->readSettings(settings);
+	setLexer(lexer);
 }
 
 void CodeEditor::updateTitle( bool )
