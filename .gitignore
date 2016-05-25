@@ -1,3 +1,10 @@
 build
 Thumbs.db
 /source/ParserBase.out
+/tools/debug
+/tools/release
+/tools/*.vcxproj
+/tools/*.filters
+/tools/*.sdf
+/tools/*.suo
+/*.user
